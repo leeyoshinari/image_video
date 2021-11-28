@@ -1,0 +1,23 @@
+.container
+{
+    width: 90%;
+    margin-top: 1%;
+}
+label
+{
+    margin-left: 1%;
+}
+input
+{
+    width: 150px;
+}
+select
+{
+    width: 120px;
+    height: 25px;
+}
+button
+{
+    width: 69px;
+    margin-left: 25px;
+}
