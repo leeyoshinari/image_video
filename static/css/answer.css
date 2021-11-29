@@ -1,0 +1,11 @@
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+th {
+    text-align: center;
+}
+.table_style {
+    margin: auto;
+    background-color: #99CCFF;
+}

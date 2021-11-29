@@ -7,32 +7,48 @@
     <link href="../static/favicon.ico" rel="shortcut ico" type="image/x-icon">
     <link href="../static/css/bootstrap.css" rel="stylesheet">
     <link href="../static/css/image_css.css" rel="stylesheet">
+    {% block csss %}
+    {% endblock %}
 
     <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/template.js"></script>
+    {% block scripts %}
+    {% endblock %}
 </head>
 <body>
     {% block body %}
         <div class="container">
-            <label>查询类型:</label>
-            <select>
-                <option value="0">回答</option>
-                <option value="1">评论</option>
-                <option value="2">相似度</option>
-                <option value="3">图片</option>
-            </select>
-            <label>问题Id:</label>
-            <input type="text" placeholder="问题Id">
-            <label>回答Id:</label>
-            <input type="text" placeholder="回答Id">
-            <label>用户Id:</label>
-            <input type="text" placeholder="用户Id">
-            <label>关键词:</label>
+            <div class="filter">
+                <label>查询类型:</label>
+                <select id="query_type" onchange="select_charge()">
+                    <option value="0" selected="selected">回答</option>
+                    <option value="1">评论</option>
+                    <option value="2">相似度</option>
+                    <option value="3">关键词</option>
+                    <option value="4">图片</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label>问题Id:</label>
+                <input type="text" placeholder="问题Id">
+            </div>
+            <div class="filter">
+                <label>回答Id:</label>
+                <input type="text" placeholder="回答Id">
+            </div>
+            <div class="filter" style="display: none;">
+                <label>用户Id:</label>
+                <input type="text" placeholder="用户Id">
+            </div>
+            <div class="filter" style="display: none;">
+                <label>关键词:</label>
             <input type="text" placeholder="回答关键词">
+            </div>
             <button onchange="">Search</button>
             <button onchange="">Help</button>
         </div>
         <div class="container">
-            {% block images %}
+            {% block tables %}
             {% endblock %}
         </div>
     {% endblock %}

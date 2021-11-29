@@ -1,1 +1,27 @@
 {% extends "template.html" %}
+{% block csss %}
+<link href="../static/css/answer.css" rel="stylesheet">
+{% endblock %}
+
+{% block tables %}
+<table border="1" cellspacing="0" cellpadding="6">
+    <tr class="table_style">
+        <th width="15%">问题Id</th>
+        <th width="10%">回答Id</th>
+        <th width="15%">回答人</th>
+        <th width="40%">回答内容</th>
+        <th width="10%">创建时间</th>
+        <th width="10%">更新时间</th>
+    </tr>
+    {% for data in datas %}
+        <tr>
+            <td title="{{ data[0] }}">{{ data[0] }}</td>
+            <td><a href="https://zhihu.com/question/{{ data[0] }}/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
+            <td>{{ data[2] }}</td>
+            <td title="{{ data[3] }}">{{ data[3] }}</td>
+            <td>{{ data[4] }}</td>
+            <td>{{ data[5] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

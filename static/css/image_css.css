@@ -3,21 +3,25 @@
     width: 90%;
     margin-top: 1%;
 }
+.filter {
+    float: left;
+    width: 16%;
+}
 label
 {
     margin-left: 1%;
 }
 input
 {
-    width: 150px;
+    width: 69%;
 }
 select
 {
-    width: 120px;
+    width: 60%;
     height: 25px;
 }
 button
 {
-    width: 69px;
+    width: 5%;
     margin-left: 25px;
 }

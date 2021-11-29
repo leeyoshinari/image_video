@@ -14,6 +14,10 @@ async def home(request):
     return aiohttp_jinja2.render_template('home.html', request, context={})
 
 
+async def home(request):
+    return aiohttp_jinja2.render_template('home.html', request, context={})
+
+
 async def main():
     app = web.Application()
     aiohttp_jinja2.setup(app, loader = jinja2.FileSystemLoader('templates'))
