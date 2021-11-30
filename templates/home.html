@@ -15,7 +15,7 @@
     </tr>
     {% for data in datas %}
         <tr>
-            <td title="{{ data[0] }}">{{ data[0] }}</td>
+            <td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
             <td><a href="https://zhihu.com/question/{{ data[0] }}/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
             <td>{{ data[2] }}</td>
             <td title="{{ data[3] }}">{{ data[3] }}</td>

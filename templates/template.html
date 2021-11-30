@@ -28,7 +28,7 @@
                     <option value="4">图片</option>
                 </select>
             </div>
-            <div class="filter">
+            <div class="filter" style="display: none;">
                 <label>问题Id:</label>
                 <input type="text" placeholder="问题Id">
             </div>
@@ -44,8 +44,8 @@
                 <label>关键词:</label>
             <input type="text" placeholder="回答关键词">
             </div>
-            <button onchange="">Search</button>
-            <button onchange="">Help</button>
+            <button onclick="search()">Search</button>
+            <button onclick="">Help</button>
         </div>
         <div class="container">
             {% block tables %}
