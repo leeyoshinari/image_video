@@ -8,25 +8,39 @@ from aiohttp import web
 import aiohttp_jinja2
 
 from common.config import getServer
-from common.mysql import get_answer
+from common.mysql import get_answer, get_comment, get_key_word
 
 
 async def home(request):
-    return aiohttp_jinja2.render_template('home.html', request, context={})
+    return aiohttp_jinja2.render_template('template.html', request, context={})
 
 
 async def comment(request):
-    return aiohttp_jinja2.render_template('home.html', request, context={})
+    user_id = request.query.get('userId')
+    results = get_comment(user_id)
+    if results:
+        return aiohttp_jinja2.render_template('comment.html', request, context={'datas': results})
+    else:
+        return aiohttp_jinja2.render_template('404.html', request, context={})
 
 
 async def answer(request):
     answer_id = request.query.get('aId')
     results = get_answer(answer_id)
-    return aiohttp_jinja2.render_template('home.html', request, context={'datas': results})
+    if results:
+        return aiohttp_jinja2.render_template('answer.html', request, context={'datas': results})
+    else:
+        return aiohttp_jinja2.render_template('404.html', request, context={})
 
 
 async def finder(request):
-    return aiohttp_jinja2.render_template('home.html', request, context={})
+    question_id = request.query.get('qId')
+    key_word = request.query.get('keyWord')
+    results = get_key_word(question_id, key_word)
+    if results:
+        return aiohttp_jinja2.render_template('answer.html', request, context={'datas': results})
+    else:
+        return aiohttp_jinja2.render_template('404.html', request, context={})
 
 
 async def images(request):
@@ -39,7 +53,7 @@ async def main():
                           path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
                           append_version=True)
     app.router.add_route('GET', '', home)
-    app.router.add_route('GET', '/common', comment)
+    app.router.add_route('GET', '/comment', comment)
     app.router.add_route('GET', '/answer', answer)
     app.router.add_route('GET', '/find', finder)
     app.router.add_route('GET', '/images', images)

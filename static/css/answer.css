@@ -9,3 +9,9 @@ th {
     margin: auto;
     background-color: #99CCFF;
 }
+
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

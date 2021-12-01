@@ -7,10 +7,12 @@
     <link href="../static/favicon.ico" rel="shortcut ico" type="image/x-icon">
     <link href="../static/css/bootstrap.css" rel="stylesheet">
     <link href="../static/css/image_css.css" rel="stylesheet">
+    <link href="../static/css/toast.style.css" rel="stylesheet">
     {% block csss %}
     {% endblock %}
 
     <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/toast.script.js"></script>
     <script src="../static/js/template.js"></script>
     {% block scripts %}
     {% endblock %}
@@ -37,8 +39,8 @@
                 <input type="text" placeholder="回答Id">
             </div>
             <div class="filter" style="display: none;">
-                <label>用户Id:</label>
-                <input type="text" placeholder="用户Id">
+                <label>用户标识:</label>
+                <input type="text" placeholder="用户的 Id 或 url token">
             </div>
             <div class="filter" style="display: none;">
                 <label>关键词:</label>

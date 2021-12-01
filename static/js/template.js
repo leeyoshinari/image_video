@@ -33,22 +33,46 @@ function search() {
     let request_url = '';
     if (query_type === '0' || query_type === '2') {
         //let question_id = filters[0].value;
-        let answer_id = filters[1].value;
+        let answer_id = filters[1].value.trim();
+        if (!answer_id) {
+            $.Toast('请输入回答Id', 'error');
+            return
+        }
         request_url = '/answer?aId=' + answer_id;
     }
     if (query_type === '1'){
-        let user_id = filters[2].value;
+        let user_id = filters[2].value.trim();
+        if (!user_id || user_id === '0') {
+            $.Toast('请输入用户 Id 或 url token', 'error');
+            return
+        }
         request_url = '/comment?userId=' + user_id;
     }
     if (query_type === '3'){
-        let question_id = filters[0].value;
-        let key_word = filters[3].value;
-        request_url = '/find?qId='+ question_id + 'keyWord=' + key_word;
+        let question_id = filters[0].value.trim();
+        let key_word = filters[3].value.trim();
+        if (!question_id) {
+            $.Toast('请输入问题Id', 'error');
+            return
+        }
+        if (!key_word) {
+            $.Toast('请输入关键词', 'error');
+            return
+        }
+        request_url = '/find?qId='+ question_id + '&keyWord=' + key_word;
     }
     if (query_type === '4'){
-        let answer_id = filters[1].value;
-        let user_id = filters[2].value;
+        let answer_id = filters[1].value.trim();
+        let user_id = filters[2].value.trim();
+        if (!answer_id) {
+            $.Toast('请输入回答Id', 'error');
+            return
+        }
+        if (!user_id) {
+            $.Toast('请输入用户Id', 'error');
+            return
+        }
         request_url = '/images?aId=' + answer_id + '&userId=' + user_id;
     }
-    window.location.href = request_url;
+    window.location.href = request_url + '&type=' + query_type;
 }
