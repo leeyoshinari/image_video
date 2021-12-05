@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <title>Images View</title>
 
-    <link href="../static/favicon.ico" rel="shortcut ico" type="image/x-icon">
-    <link href="../static/css/bootstrap.css" rel="stylesheet">
-    <link href="../static/css/image_css.css" rel="stylesheet">
-    <link href="../static/css/toast.style.css" rel="stylesheet">
+    <link href="..{{ context }}/static/favicon.ico" rel="shortcut ico" type="image/x-icon">
+    <link href="..{{ context }}/static/css/bootstrap.css" rel="stylesheet">
+    <link href="..{{ context }}/static/css/image_css.css" rel="stylesheet">
+    <link href="..{{ context }}/static/css/toast.style.css" rel="stylesheet">
     {% block csss %}
     {% endblock %}
 
-    <script src="../static/js/jquery.js"></script>
-    <script src="../static/js/toast.script.js"></script>
-    <script src="../static/js/template.js"></script>
-    {% block scripts %}
-    {% endblock %}
+    <script src="..{{ context }}/static/js/jquery.js"></script>
+    <script src="..{{ context }}/static/js/toast.script.js"></script>
+
 </head>
 <body>
     {% block body %}
@@ -23,7 +21,7 @@
             <div class="filter">
                 <label>查询类型:</label>
                 <select id="query_type" onchange="select_charge()">
-                    <option value="0" selected="selected">回答</option>
+                    <option value="0">回答</option>
                     <option value="1">评论</option>
                     <option value="2">相似度</option>
                     <option value="3">关键词</option>
@@ -31,8 +29,40 @@
                 </select>
             </div>
             <div class="filter" style="display: none;">
-                <label>问题Id:</label>
-                <input type="text" placeholder="问题Id">
+                <label>地区:</label>
+                <select id="venture">
+                    <option value="100">其他</option>
+                    <option value="120">北京</option>
+                    <option value="193">上海</option>
+                    <option value="160">广东</option>
+                    <option value="110">湖北</option>
+                    <option value="180">四川</option>
+                    <option value="152">湖南</option>
+                    <option value="112">安徽</option>
+                    <option value="140">江苏</option>
+                    <option value="141">浙江</option>
+                    <option value="130">山东</option>
+                    <option value="111">重庆</option>
+                    <option value="121">天津</option>
+                    <option value="122">河北</option>
+                    <option value="150">福建</option>
+                    <option value="151">江西</option>
+                    <option value="131">河南</option>
+                    <option value="181">陕西</option>
+                    <option value="132">山西</option>
+                    <option value="171">宁夏</option>
+                    <option value="172">甘肃</option>
+                    <option value="161">广西</option>
+                    <option value="176">云南</option>
+                    <option value="182">贵州</option>
+                    <option value="183">海南</option>
+                    <option value="173">新疆</option>
+                    <option value="199">新疆</option>
+                    <option value="190">辽宁</option>
+                    <option value="191">吉林</option>
+                    <option value="192">黑龙江</option>
+                    <option value="170">内蒙古</option>
+                </select>
             </div>
             <div class="filter">
                 <label>回答Id:</label>
@@ -49,10 +79,14 @@
             <button onclick="search()">Search</button>
             <button onclick="">Help</button>
         </div>
+        <input type="text" id="setting" value="{{ setting }}" style="width: 3px; margin-left: 3%">
         <div class="container">
             {% block tables %}
             {% endblock %}
         </div>
     {% endblock %}
 </body>
+<script src="..{{ context }}/static/js/template.js"></script>
+{% block scripts %}
+{% endblock %}
 </html>
