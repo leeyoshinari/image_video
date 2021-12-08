@@ -1,3 +1,35 @@
+let ventures = {"100":0
+,"120":1
+,"193":2
+,"160":3
+,"110":4
+,"180":5
+,"152":6
+,"112":7
+,"140":8
+,"141":9
+,"130":10
+,"111":11
+,"121":12
+,"122":13
+,"150":14
+,"151":15
+,"131":16
+,"181":17
+,"132":18
+,"171":19
+,"172":20
+,"161":21
+,"176":22
+,"182":23
+,"183":24
+,"173":25
+,"174":26
+,"175":27
+,"190":28
+,"191":29
+,"192":30
+,"170":31}
 let settings = document.getElementById('setting').value;
 if (settings) {
     load(settings);
@@ -67,6 +99,7 @@ function load(setting) {
     }
     if (sets[0] === '3') {
         document.getElementById("query_type").options[3].selected = true;
+        document.getElementById("venture").options[ventures[sets[1]]].selected = true;
         //inputs[0].value = sets[1];
         inputs[0].value = null;
         inputs[1].value = null;
@@ -168,4 +201,8 @@ function to_up_page() {
         request_url = '/images?aId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
     }
     window.location.href = '/' + context + request_url;
+}
+
+function forum() {
+    window.location.href = '/' + context + '/forum';
 }

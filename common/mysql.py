@@ -17,7 +17,7 @@ def get_answer(answer_id, page):
         cursor.execute(sql)
         results = cursor.fetchall()
     except:
-        pass
+        return None, None
     del cursor, con
     return results, total_page[0][0]
 
@@ -45,7 +45,7 @@ def get_comment(user_id, page):
         cursor.execute(sql)
         results = cursor.fetchall()
     except:
-        pass
+        return None, None
     del cursor, con
     return results, total_page[0][0]
 
@@ -66,6 +66,6 @@ def get_key_word(venture, key_word, page):
         cursor.execute(sql)
         results = cursor.fetchall()
     except:
-        pass
+        return None, None
     del cursor, con
     return results, total_page[0][0]

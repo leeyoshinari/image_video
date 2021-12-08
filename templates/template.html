@@ -25,7 +25,7 @@
                     <option value="1">评论</option>
                     <option value="2">相似度</option>
                     <option value="3">关键词</option>
-                    <option value="4">图片</option>
+                    <!--option value="4">图片</option-->
                 </select>
             </div>
             <div class="filter" style="display: none;">
@@ -57,7 +57,8 @@
                     <option value="182">贵州</option>
                     <option value="183">海南</option>
                     <option value="173">新疆</option>
-                    <option value="199">新疆</option>
+                    <option value="174">西藏</option>
+                    <option value="175">青海</option>
                     <option value="190">辽宁</option>
                     <option value="191">吉林</option>
                     <option value="192">黑龙江</option>
@@ -77,6 +78,7 @@
             <input type="text" placeholder="回答关键词">
             </div>
             <button onclick="search()">Search</button>
+            <button onclick="forum()">Forum</button>
             <button onclick="">Help</button>
         </div>
         <input type="text" id="setting" value="{{ setting }}" style="width: 3px; margin-left: 3%">
@@ -84,6 +86,8 @@
             {% block tables %}
             {% endblock %}
         </div>
+    {% endblock %}
+    {% block comment %}
     {% endblock %}
 </body>
 <script src="..{{ context }}/static/js/template.js"></script>

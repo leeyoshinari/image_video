@@ -31,12 +31,8 @@
 <div class="pages">
     {% if total > page * 15 %}
         <button class="paging" onclick="to_next_page()">Next >></button>
-    {% else %}
-        <button class="paging" onclick="to_next_page()" style="display: none;">Next >></button>
     {% endif %}
-    {% if total <= 15 or page < 2 %}
-        <button class="paging" onclick="to_up_page()" style="display: none;"><< Pre</button>
-    {% else %}
+    {% if total > 15 and page > 1 %}
         <button class="paging" onclick="to_up_page()"><< Pre</button>
     {% endif %}
 </div>

@@ -1,0 +1,35 @@
+{% extends "template.html" %}
+
+{% block comment %}
+    <div class="container">
+        <div class="comment">
+            <h4>评论</h4>
+            <h5>时间</h5>
+            <h5>点赞</h5>
+        </div>
+        <div>
+            <div class="parentComment">
+                <div class="commenter">
+                    <span class="name">12345678901234:</span>
+                    <span class="content">dfsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
+                </div>
+                <div class="action">
+                    <span>2021-12-07 10:12:59</span>
+                    <span>回复</span>
+                    <span>点赞(15)</span>
+                </div>
+            </div>
+            <div class="childComment">
+                <div class="commenter">
+                    <span class="name">12345678901234:</span>
+                    <span class="content">dfsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
+                </div>
+                <div class="action">
+                    <span>2021-12-07 10:12:59</span>
+                    <span>回复</span>
+                    <span>点赞(15)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
