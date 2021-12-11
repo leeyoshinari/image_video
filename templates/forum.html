@@ -1,11 +1,13 @@
 {% extends "template.html" %}
-
+{% block csss %}
+<link href="..{{ context }}/static/css/forum.css" rel="stylesheet">
+{% endblock %}
 {% block comment %}
-    <div class="container">
+    <div class="container" style="width: 60%; margin-left: 6%;">
         <div class="comment">
-            <h4>评论</h4>
+            <h4>论坛</h4>
             <h5>时间</h5>
-            <h5>点赞</h5>
+            <h5>热度</h5>
         </div>
         <div>
             <div class="parentComment">
@@ -16,7 +18,6 @@
                 <div class="action">
                     <span>2021-12-07 10:12:59</span>
                     <span>回复</span>
-                    <span>点赞(15)</span>
                 </div>
             </div>
             <div class="childComment">
@@ -27,7 +28,6 @@
                 <div class="action">
                     <span>2021-12-07 10:12:59</span>
                     <span>回复</span>
-                    <span>点赞(15)</span>
                 </div>
             </div>
         </div>

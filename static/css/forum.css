@@ -1,0 +1,43 @@
+
+h4 {
+    float: left;
+    font-weight: bolder;
+    margin-left: 1%;
+}
+
+h5 {
+    float: right;
+    margin-right: 2%;
+}
+
+.comment {
+    height: 38px;
+    background-color: silver;
+}
+
+.parentComment .commenter {
+    margin-top: 1%;
+    margin-left: 3%;
+}
+
+.name {
+    font-weight: bold;
+    margin-right: 1%;
+}
+
+.content {}
+
+.action {
+    text-align: right;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.action span {
+    margin-right: 2%;
+}
+
+.childComment .commenter {
+    margin-top: 1%;
+    margin-left: 9%;
+}

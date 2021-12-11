@@ -8,18 +8,24 @@ from aiohttp import web
 import aiohttp_jinja2
 
 from common.config import getServer
+from common.deal_ip import IPQueue
 from common.mysql import get_answer, get_comment, get_key_word
 from common.logger import logger
 
 
+FIFO = IPQueue()
+
+
 async def home(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
+    FIFO.put_queue(host)
+    FIFO.put_queue('home')
     logger.info(f'{host} - home')
     return aiohttp_jinja2.render_template('template.html', request, context={'context': getServer("serverContext"), 'setting': ''})
 
 
 async def comment(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
     user_id = request.query.get('userId')
     user_id = user_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
@@ -29,6 +35,8 @@ async def comment(request):
     if auth != 'lee':
         page = page if page < 3 else 2
     setting = f'{types},{user_id},{page}'
+    FIFO.put_queue(host)
+    FIFO.put_queue('comment')
     logger.info(f'{host} - comment - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -42,7 +50,7 @@ async def comment(request):
 
 
 async def answer(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
     answer_id = request.query.get('aId')
     answer_id = answer_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
@@ -52,6 +60,8 @@ async def answer(request):
     if auth != 'lee':
         page = page if page < 3 else 2
     setting = f'{types},{answer_id},{page}'
+    FIFO.put_queue(host)
+    FIFO.put_queue('answer')
     logger.info(f'{host} - answer - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -65,7 +75,7 @@ async def answer(request):
 
 
 async def finder(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
     venture = request.query.get('venture')
     key_word = request.query.get('keyWord')
     key_word = key_word.replace('%', '').replace('+', '')
@@ -76,6 +86,8 @@ async def finder(request):
     if auth != 'lee':
         page = page if page < 3 else 2
     setting = f'{types},{venture},{key_word},{page}'
+    FIFO.put_queue(host)
+    FIFO.put_queue('finder')
     logger.info(f'{host} - finder - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -89,13 +101,15 @@ async def finder(request):
 
 
 async def similarity(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
     answer_id = request.query.get('aId')
     answer_id = answer_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
     page = request.query.get('page')
     page = int(page) if page else 1
     setting = f'{types},{answer_id},{page}'
+    FIFO.put_queue(host)
+    FIFO.put_queue('similarity')
     logger.info(f'{host} - similarity - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request,
@@ -111,12 +125,14 @@ async def similarity(request):
 
 
 async def images(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
     return aiohttp_jinja2.render_template('template.html', request, context={'context': getServer("serverContext"), })
 
 
 async def forum(request):
-    host = request.headers.get('Host')
+    host = request.headers.get('X-Real-IP')
+    FIFO.put_queue(host)
+    FIFO.put_queue('forum')
     return aiohttp_jinja2.render_template('forum.html', request, context={'context': getServer("serverContext"), })
 
 
