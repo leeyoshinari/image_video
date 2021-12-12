@@ -26,7 +26,7 @@ class IPQueue:
         self.q.put(value)
 
     def connect_sql(self):
-        self.con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'),
+        self.con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                               password=getServer('db_pwd'), database=getServer('db_name'))
         self.cursor = self.con.cursor()
 

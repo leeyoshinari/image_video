@@ -3,10 +3,15 @@
 # Author: leeyoshinari
 import pymysql
 from common.config import getServer
+from common.scheduler import Schedule
+from common.simhash import hamming_distance, cal_percentage
+from common.logger import logger
 
+
+sch = Schedule()
 
 def get_answer(answer_id, page):
-    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'),
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     sql = f'select question_id, answer_id, name, content, create_time, update_time from simple_answer where answer_id={answer_id} order by update_time desc limit 15 offset {page};'
@@ -16,14 +21,16 @@ def get_answer(answer_id, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except:
-        return None, None
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None, 0
     del cursor, con
     return results, total_page[0][0]
 
 
 def get_comment(user_id, page):
-    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'),
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     if '-' in user_id or len(user_id) < 22:
@@ -44,14 +51,16 @@ def get_comment(user_id, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except:
-        return None, None
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None, 0
     del cursor, con
     return results, total_page[0][0]
 
 
 def get_key_word(venture, key_word, page):
-    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'),
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     if venture == '100':
@@ -65,10 +74,48 @@ def get_key_word(venture, key_word, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except:
-        return None, None
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None, 0
     del cursor, con
     return results, total_page[0][0]
+
+
+def get_similarity(answer_id, page, is_init = False):
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+
+    if is_init:
+        sch.get_result()
+
+    sql = f'select id, hash from simple_answer where answer_id={answer_id} order by update_time desc limit 1;'
+    select_sql = 'select id, question_id, answer_id, name, content, create_time, update_time from simple_answer where id in {};'
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        hash1 = results[0][1]
+
+        res_list = []
+        for r in sch.res:
+            hamming = hamming_distance(int(hash1), int(r[1]))
+            if hamming < 9:
+                res_list.append([r[0], cal_percentage(hamming)])
+
+        res_list.sort(key=lambda x: x[1], reverse=True)
+        res_sorted = res_list[page: page + 15]
+        ids = [x[0] for x in res_sorted]
+        total_page = len(res_list)
+
+        cursor.execute(select_sql.format(tuple(ids)))
+        results = cursor.fetchall()
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None, 0
+    del cursor, con
+    return merge_res(res_sorted, results), total_page
 
 
 def get_forum(page, search_type = 'time', order_type = 'desc'):
@@ -85,15 +132,34 @@ def get_forum(page, search_type = 'time', order_type = 'desc'):
               "SELECT parent_id, count( parent_id ) num FROM forum WHERE parent_id != '' GROUP BY parent_id ) " \
               "b ORDER BY b.num {} LIMIT 10 OFFSET {} ) a LEFT JOIN forum c ON a.parent_id = c.parent_id );"
 
-    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'),
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
-    cursor.execute(count)
-    total_page = cursor.fetchall()
-    if search_type == 'time':
-        cursor.execute(time_sql.format(order_type, page, order_type, page))
-        results = cursor.fetchall()
+    try:
+        cursor.execute(count)
+        total_page = cursor.fetchall()
+        if search_type == 'time':
+            cursor.execute(time_sql.format(order_type, page, order_type, page))
+            results = cursor.fetchall()
 
-    if search_type == 'hot':
-        cursor.execute(hot_sql.format(order_type, page, order_type, page))
-        results = cursor.fetchall()
+        if search_type == 'hot':
+            cursor.execute(hot_sql.format(order_type, page, order_type, page))
+            results = cursor.fetchall()
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None, 0
+    del cursor, con
+    return results, total_page[0][0]
+
+
+def merge_res(res_sorted, all_res):
+    result = []
+    res_dict = dict(res_sorted)
+    for x in all_res:
+        xx = list(x)
+        xx.append(res_dict[x[0]])
+        result.append(xx)
+
+    result.sort(key=lambda y: y[7], reverse=True)
+    return result

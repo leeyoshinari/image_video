@@ -16,17 +16,17 @@
     </tr>
     {% for data in datas %}
         <tr>
-            <td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
-            {% if data[0] %}
-                <td><a href="https://zhihu.com/question/{{ data[0] }}/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
+            <td id="{{ data[0] }}"><a href="https://zhihu.com/question/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
+            {% if data[1] %}
+                <td><a href="https://zhihu.com/question/{{ data[1] }}/answer/{{ data[2] }}" target="_blank">{{ data[2] }}</a></td>
             {% else %}
-                <td>{{ data[1] }}</td>
+                <td>{{ data[2] }}</td>
             {% endif %}
-            <td>{{ data[2] }}</td>
-            <td title="{{ data[3] }}" style="text-align: left;">{{ data[3] }}</td>
-            <td>{{ data[4] }}</td>
+            <td>{{ data[3] }}</td>
+            <td title="{{ data[4] }}" style="text-align: left;">{{ data[4] }}</td>
             <td>{{ data[5] }}</td>
-            <td>{{ data[5] }}%</td>
+            <td>{{ data[6] }}</td>
+            <td>{{ data[7] }}%</td>
         </tr>
     {% endfor %}
 </table>

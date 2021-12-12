@@ -126,7 +126,7 @@ function search() {
     let query_type = document.getElementById("query_type").value;
     let filters = document.getElementsByTagName("input");
     let request_url = '';
-    if (query_type === '0' || query_type === '2') {
+    if (query_type === '0') {
         //let question_id = filters[0].value;
         let answer_id = filters[0].value.trim();
         if (!answer_id) {
@@ -142,6 +142,15 @@ function search() {
             return
         }
         request_url = '/comment?userId=' + user_id;
+    }
+    if (query_type === '2') {
+        //let question_id = filters[0].value;
+        let answer_id = filters[0].value.trim();
+        if (!answer_id) {
+            $.Toast('请输入回答Id', 'error');
+            return
+        }
+        request_url = '/similarity?aId=' + answer_id;
     }
     if (query_type === '3'){
         let venture = document.getElementById("venture").value;
@@ -167,11 +176,14 @@ function to_next_page() {
     let sets = settings.split(',');
     let page = parseInt(sets[2]) + 1;
     let request_url = '';
-    if (sets[0] === '0' || sets[0] === '2') {
+    if (sets[0] === '0') {
         request_url = '/answer?aId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
     }
     if (sets[0] === '1'){
         request_url = '/comment?userId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
+    }
+    if (sets[0] === '2') {
+        request_url = '/similarity?aId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
     }
     if (sets[0] === '3'){
         page = parseInt(sets[3]) + 1;
@@ -187,11 +199,14 @@ function to_up_page() {
     let sets = settings.split(',');
     let page = parseInt(sets[2]) - 1;
     let request_url = '';
-    if (sets[0] === '0' || sets[0] === '2') {
+    if (sets[0] === '0') {
         request_url = '/answer?aId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
     }
     if (sets[0] === '1'){
         request_url = '/comment?userId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
+    }
+    if (sets[0] === '2'){
+        request_url = '/similarity?aId=' + sets[1] + '&type=' + sets[0] + '&page=' + page;
     }
     if (sets[0] === '3'){
         page = parseInt(sets[3]) - 1;
@@ -205,4 +220,9 @@ function to_up_page() {
 
 function forum() {
     window.location.href = '/' + context + '/forum';
+}
+
+function course() {
+    window.location.href = '/' + context + '/course';
+
 }
