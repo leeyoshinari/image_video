@@ -120,10 +120,10 @@ def get_similarity(answer_id, page, is_init = False):
 
 def get_forum(page, search_type = 'time', order_type = 'desc'):
     count = f"select count(1) from forum where parent_id = '';"
-    time_sql = "( SELECT id, parent_id, user_id, content, create_time FROM forum WHERE parent_id = '' ORDER BY ' \
-          'create_time {} LIMIT 10 OFFSET {} ) UNION ALL (SELECT b.id, b.parent_id, b.user_id, b.content, ' \
-          'b.create_time FROM ( SELECT id FROM forum WHERE parent_id = '' ORDER BY create_time {} LIMIT 10 ' \
-          'OFFSET {} ) a LEFT JOIN forum b ON a.id = b.parent_id );"
+    time_sql = "( SELECT id, parent_id, user_id, content, create_time FROM forum WHERE parent_id = '' ORDER BY " \
+          "create_time {} LIMIT 10 OFFSET {} ) UNION ALL (SELECT b.id, b.parent_id, b.user_id, b.content, " \
+          "b.create_time FROM ( SELECT id FROM forum WHERE parent_id = '' ORDER BY create_time {} LIMIT 10 " \
+          "OFFSET {} ) a LEFT JOIN forum b ON a.id = b.parent_id );"
 
     hot_sql = "( SELECT c.id, c.parent_id, c.user_id, c.content, c.create_time FROM (SELECT b.parent_id FROM ( " \
               "SELECT parent_id, count( parent_id ) num FROM forum WHERE parent_id != '' GROUP BY parent_id ) b " \
@@ -150,7 +150,7 @@ def get_forum(page, search_type = 'time', order_type = 'desc'):
         del cursor, con
         return None, 0
     del cursor, con
-    return results, total_page[0][0]
+    return deal_forum(results), total_page[0][0]
 
 
 def merge_res(res_sorted, all_res):
@@ -163,3 +163,13 @@ def merge_res(res_sorted, all_res):
 
     result.sort(key=lambda y: y[7], reverse=True)
     return result
+
+
+def deal_forum(results):
+    res = {}
+    for r in results:
+        if r[1]:
+            res[str(r[1])]['child'].append({"id": r[0], "name": r[2], "content": r[3], "create_time": r[4]})
+        else:
+            res.update({str(r[0]): {"id": r[0], "name": r[2], "content": r[3], "create_time": r[4], "child": []}})
+    return res

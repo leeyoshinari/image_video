@@ -37,7 +37,9 @@ h5 {
     margin-right: 2%;
 }
 
+.childComment {
+    margin-left: 8%;
+}
 .childComment .commenter {
     margin-top: 1%;
-    margin-left: 9%;
 }

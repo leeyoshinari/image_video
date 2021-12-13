@@ -8,7 +8,7 @@ import numpy as np
 
 
 def content_vector(contents):
-    # contents = re.sub('[^\w]+', '', contents)
+    contents = re.sub('[^\w]+', '', contents)
     keywords = jieba.lcut(contents)
     ret_list = []
     for word in keywords:
@@ -62,5 +62,5 @@ def cal_percentage(x):
 
 
 if __name__ == '__main__':
-    h = hamming_distance(2784020025728, 2305845793233719680)
+    h = hamming_distance(2784020027777, 2305845793233719681)
     print(h)

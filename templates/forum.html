@@ -10,26 +10,34 @@
             <h5>热度</h5>
         </div>
         <div>
-            <div class="parentComment">
-                <div class="commenter">
-                    <span class="name">12345678901234:</span>
-                    <span class="content">dfsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
+            {% for k, v in datas.items() %}
+            <div>
+                <div class="parentComment">
+                    <div class="commenter">
+                        <span class="name">用户 {{ v.name }}:</span>
+                        <span class="content">{{ v.content }}</span>
+                    </div>
+                    <div class="action">
+                        <span>{{ v.create_time }}</span>
+                        <span>回复</span>
+                    </div>
                 </div>
-                <div class="action">
-                    <span>2021-12-07 10:12:59</span>
-                    <span>回复</span>
+                {% if v.child %}
+                {% for d in v.child %}
+                <div class="childComment">
+                    <div class="commenter">
+                        <span class="name">用户 {{ d.name }}:</span>
+                        <span class="content">{{ d.content }}</span>
+                    </div>
+                    <div class="action">
+                        <span>{{ d.create_time }}</span>
+                        <span>回复</span>
+                    </div>
                 </div>
+                {% endfor %}
+                {% endif %}
             </div>
-            <div class="childComment">
-                <div class="commenter">
-                    <span class="name">12345678901234:</span>
-                    <span class="content">dfsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
-                </div>
-                <div class="action">
-                    <span>2021-12-07 10:12:59</span>
-                    <span>回复</span>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
