@@ -37,9 +37,59 @@ h5 {
     margin-right: 2%;
 }
 
+.action button {
+    width: 6%;
+    border: none;
+    background-color: white;
+}
+
 .childComment {
     margin-left: 8%;
 }
 .childComment .commenter {
     margin-top: 1%;
+}
+
+.input-comment {
+    margin-left: 6%;
+    width: 60%;
+    position: fixed;
+    bottom: 20px;
+    height: auto;
+  }
+
+.input-comment div {
+    background-color: #f2f2f2;
+    padding: 16px 20px;
+    height: auto;
+  }
+
+.input-comment textarea{
+    width: 89%;
+    height: auto;
+    border: none;
+    min-height: 38px;
+    float: left;
+}
+
+.input-comment button {
+    min-height: 30px;
+    background-color: #7bb9ee;
+    border: none;
+    margin-top: 1%;
+}
+
+.pages {
+    width: 66%;
+    margin-top: 2%;
+    margin-bottom: 10%;
+}
+
+.paging {
+    float: right;
+    font-weight: bolder;
+    border: none;
+    background-color: #5b9bde;
+    height: 33px;
+    width: 77px;
 }

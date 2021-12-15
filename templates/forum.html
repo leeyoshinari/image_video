@@ -5,7 +5,7 @@
 {% block comment %}
     <div class="container" style="width: 60%; margin-left: 6%;">
         <div class="comment">
-            <h4>论坛</h4>
+            <h4>留言</h4>
             <h5>时间</h5>
             <h5>热度</h5>
         </div>
@@ -19,7 +19,7 @@
                     </div>
                     <div class="action">
                         <span>{{ v.create_time }}</span>
-                        <span>回复</span>
+                        <button onclick="replys('{{ v.id }}', '{{ v.name }}')">回复</button>
                     </div>
                 </div>
                 {% if v.child %}
@@ -31,7 +31,7 @@
                     </div>
                     <div class="action">
                         <span>{{ d.create_time }}</span>
-                        <span>回复</span>
+                        <button onclick="replys('{{ d.id }}', '{{ d.name }}')">回复</button>
                     </div>
                 </div>
                 {% endfor %}
@@ -40,4 +40,22 @@
             {% endfor %}
         </div>
     </div>
+<div class="pages">
+    {% if total > page * 10 %}
+        <button class="paging" onclick="to_next_comment('{{ page }}')">Next >></button>
+    {% endif %}
+    {% if total > 10 and page > 1 %}
+        <button class="paging" onclick="to_up_comment('{{ page }}')"><< Pre</button>
+    {% endif %}
+</div>
+<div class="input-comment">
+    <div id="submit-comment">
+        <textarea id="v-input" rows="2" placeholder="留言千万条，友善第一条"></textarea>
+        <button onclick="submit()">发 布</button>
+    </div>
+    <div id="reply-comment" style="display: none">
+        <textarea id="v-reply" rows="2"></textarea>
+        <button onclick="reply()">发 布</button>
+    </div>
+</div>
 {% endblock %}

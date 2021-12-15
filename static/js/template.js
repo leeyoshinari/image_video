@@ -226,3 +226,78 @@ function course() {
     window.location.href = '/' + context + '/course';
 
 }
+
+function submit() {
+    document.getElementById("reply-comment").style.display = 'none';
+    let v_input = document.getElementById("v-input").value;
+    if (!v_input) {
+        $.Toast("请输入内容", 'error');
+        return;
+    }
+    let data = {
+        id: null,
+        content: v_input
+    }
+    $.ajax({
+        type: "post",
+        url: "addComment",
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            if (data['code'] === 1) {
+                $.Toast(data['msg'], 'success');
+            } else {
+                $.Toast(data['msg'], 'error');
+                return;
+            }
+            window.location.href = 'forum';
+        }
+    })
+}
+
+function replys(user_id, user_name) {
+    document.getElementById("reply-comment").style.display = '';
+    document.getElementById("submit-comment").style.display = 'none';
+    document.getElementById("v-reply").setAttribute("placeholder", "回复 用户 " + user_name + "：")
+    document.getElementById("v-reply").className = user_id;
+}
+
+function reply() {
+    let v_input = document.getElementById("v-reply").value;
+    let user_id = document.getElementById("v-reply").className;
+    if (!v_input) {
+        $.Toast("请输入内容", 'error');
+        return;
+    }
+    let data = {
+        id: user_id,
+        content: v_input
+    }
+    $.ajax({
+        type: "post",
+        url: "addComment",
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            if (data['code'] === 1) {
+                $.Toast(data['msg'], 'success');
+            } else {
+                $.Toast(data['msg'], 'error');
+                return;
+            }
+            window.location.href = 'forum';
+        }
+    })
+}
+
+function to_next_comment(page) {
+    page = parseInt(page) + 1;
+    window.location.href = '/' + context + '/forum?page=' + page;
+}
+
+function to_up_comment(page) {
+    page = parseInt(page) - 1;
+    window.location.href = '/' + context + '/forum?page=' + page;
+}

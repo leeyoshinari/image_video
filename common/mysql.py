@@ -121,9 +121,9 @@ def get_similarity(answer_id, page, is_init = False):
 def get_forum(page, search_type = 'time', order_type = 'desc'):
     count = f"select count(1) from forum where parent_id = '';"
     time_sql = "( SELECT id, parent_id, user_id, content, create_time FROM forum WHERE parent_id = '' ORDER BY " \
-          "create_time {} LIMIT 10 OFFSET {} ) UNION ALL (SELECT b.id, b.parent_id, b.user_id, b.content, " \
-          "b.create_time FROM ( SELECT id FROM forum WHERE parent_id = '' ORDER BY create_time {} LIMIT 10 " \
-          "OFFSET {} ) a LEFT JOIN forum b ON a.id = b.parent_id );"
+          "create_time {} LIMIT 10 OFFSET {} ) UNION ALL (SELECT * FROM (SELECT b.id, b.parent_id, b.user_id, b.content, " \
+          "b.create_time FROM ( SELECT id FROM forum WHERE parent_id = '' ORDER BY create_time {} LIMIT 10 OFFSET {} ) a LEFT JOIN " \
+          "forum b ON a.id = b.parent_id ORDER BY b.create_time limit 99999) c where c.id IS NOT NULL);"
 
     hot_sql = "( SELECT c.id, c.parent_id, c.user_id, c.content, c.create_time FROM (SELECT b.parent_id FROM ( " \
               "SELECT parent_id, count( parent_id ) num FROM forum WHERE parent_id != '' GROUP BY parent_id ) b " \
@@ -151,6 +151,22 @@ def get_forum(page, search_type = 'time', order_type = 'desc'):
         return None, 0
     del cursor, con
     return deal_forum(results), total_page[0][0]
+
+
+def add_comment(data):
+    sql = "insert into forum (parent_id, user_id, content, create_time) values {};"
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    logger.info(sql.format(data))
+    try:
+        cursor.execute(sql.format(data))
+        con.commit()
+        del cursor, con
+    except Exception as err:
+        logger.error(err)
+        del cursor, con
+        raise Exception(err)
 
 
 def merge_res(res_sorted, all_res):
