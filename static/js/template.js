@@ -301,3 +301,59 @@ function to_up_comment(page) {
     page = parseInt(page) - 1;
     window.location.href = '/' + context + '/forum?page=' + page;
 }
+
+function connect_modal() {
+    let modal = document.getElementById('myModal');
+    let close_a = document.getElementsByClassName("close")[0];
+    let cancel_a = document.getElementsByClassName("cancel")[0];
+    let submit_a = document.getElementsByClassName("submit")[0];
+
+    modal.style.display = "block";
+
+    close_a.onclick = function() {
+        modal.style.display = "none";
+    }
+    cancel_a.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    submit_a.onclick = function() {
+        let wechat = document.getElementById("wechat").value;
+        let content = document.getElementById("submit_content").value;
+
+        if (!wechat || !content) {
+            console.log(123);
+            $.Toast('所有内容都要填写哦 ~ ', 'error');
+            return;
+        }
+
+        let post_data = {
+            tel: wechat,
+            content: content
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "addConnect",
+            data: JSON.stringify(post_data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (data['code'] === 1) {
+                    $.Toast(data['msg'], 'success');
+                    modal.style.display = "none";
+                } else {
+                    $.Toast(data['msg'], 'error');
+                    return;
+                }
+            }
+        })
+    }
+
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}

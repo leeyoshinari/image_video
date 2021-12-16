@@ -11,7 +11,7 @@ import aiohttp_jinja2
 
 from common.config import getServer, user_name
 from common.deal_ip import IPQueue
-from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment
+from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment, add_connect
 from common.logger import logger
 
 
@@ -180,6 +180,19 @@ async def addComment(request):
         return web.json_response({'code': 0, 'msg': err, 'data': None})
 
 
+async def addConnect(request):
+    host = request.headers.get('X-Real-IP')
+    data = json.loads(await request.text())
+    date_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    host = host if host else ''
+    contact_data = (host, data['tel'], data['content'], date_time)
+    try:
+        add_connect(contact_data)
+        return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
+    except Exception as err:
+        return web.json_response({'code': 0, 'msg': err, 'data': None})
+
+
 async def main():
     app = web.Application()
     aiohttp_jinja2.setup(app, loader = jinja2.FileSystemLoader('templates'))
@@ -195,6 +208,7 @@ async def main():
     app.router.add_route('GET', f'{getServer("serverContext")}/similarity', similarity)
     app.router.add_route('GET', f'{getServer("serverContext")}/course', course)
     app.router.add_route('POST', f'{getServer("serverContext")}/addComment', addComment)
+    app.router.add_route('POST', f'{getServer("serverContext")}/addConnect', addConnect)
 
     runner = web.AppRunner(app)
     await runner.setup()

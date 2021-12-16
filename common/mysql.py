@@ -168,6 +168,21 @@ def add_comment(data):
         del cursor, con
         raise Exception(err)
 
+def add_connect(data):
+    sql = "insert into message (ip, contact, content, create_time) values {};"
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    logger.info(sql.format(data))
+    try:
+        cursor.execute(sql.format(data))
+        con.commit()
+        del cursor, con
+    except Exception as err:
+        logger.error(err)
+        del cursor, con
+        raise Exception(err)
+
 
 def merge_res(res_sorted, all_res):
     result = []
