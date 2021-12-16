@@ -9,7 +9,7 @@ import jinja2
 from aiohttp import web
 import aiohttp_jinja2
 
-from common.config import getServer
+from common.config import getServer, user_name
 from common.deal_ip import IPQueue
 from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment
 from common.logger import logger
@@ -144,14 +144,15 @@ async def forum(request):
     page = int(page) if page else 1
     search_type = search_type if search_type else 'time'
     order_type = order_type if order_type else 'desc'
+    setting = f'{search_type},{order_type},{page}'
     FIFO.put_queue(host)
     FIFO.put_queue('forum')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
     results, total_page = get_forum((page - 1) * 10, search_type, order_type)
     if results:
-        return aiohttp_jinja2.render_template('forum.html', request,
-                                              context={'context': getServer("serverContext"), 'datas': results, 'total': total_page, 'page': page})
+        return aiohttp_jinja2.render_template('forum.html', request, context={'context': getServer("serverContext"),
+                                              'setting': setting, 'datas': results, 'total': total_page, 'page': page})
     else:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
 
@@ -167,9 +168,11 @@ async def addComment(request):
     host = request.headers.get('X-Real-IP')
     data = json.loads(await request.text())
     date_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    user_id = host if host else '123456'
+    user_id = user_name(host) if host else '2020520'
     parent_id = data['id'] if data['id'] else ''
     comment_data = (parent_id, user_id, data['content'], date_time)
+    FIFO.put_queue(host)
+    FIFO.put_queue('addComment')
     try:
         add_comment(comment_data)
         return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
