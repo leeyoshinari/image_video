@@ -6,8 +6,16 @@
     <div class="container" style="width: 60%; margin-left: 6%;">
         <div class="comment">
             <h4>留言</h4>
-            <h5>时间</h5>
-            <h5>热度</h5>
+            <div class="click timer">
+                <h5>热度</h5>
+                <a class="top" href="#"></a>
+                <a class="bottom" href="#"></a>
+            </div>
+            <div class="click">
+                <h5>时间</h5>
+                <a class="top" href="#" onclick="forum_order('time', 'desc')"></a>
+                <a class="bottom" href="#" onclick="forum_order('time', 'asc')"></a>
+            </div>
         </div>
         <div>
             {% for k, v in datas.items() %}
@@ -42,10 +50,10 @@
     </div>
 <div class="pages">
     {% if total > page * 10 %}
-        <button class="paging" onclick="to_next_comment('{{ page }}')">Next >></button>
+        <button class="paging" onclick="to_next_comment('{{ setting }}')">Next >></button>
     {% endif %}
     {% if total > 10 and page > 1 %}
-        <button class="paging" onclick="to_up_comment('{{ page }}')"><< Pre</button>
+        <button class="paging" onclick="to_up_comment('{{ setting }}')"><< Pre</button>
     {% endif %}
 </div>
 <div class="input-comment">

@@ -142,7 +142,7 @@ def get_forum(page, search_type = 'time', order_type = 'desc'):
             cursor.execute(time_sql.format(order_type, page, order_type, page))
             results = cursor.fetchall()
 
-        if search_type == 'hot':
+        if search_type == 'hotttt':
             cursor.execute(hot_sql.format(order_type, page, order_type, page))
             results = cursor.fetchall()
     except Exception as err:

@@ -292,14 +292,20 @@ function reply() {
     })
 }
 
-function to_next_comment(page) {
-    page = parseInt(page) + 1;
-    window.location.href = '/' + context + '/forum?page=' + page;
+function forum_order(searchType, orderType) {
+    window.location.href = '/' + context + '/forum?searchType=' + searchType + '&orderType=' + orderType;
 }
 
-function to_up_comment(page) {
-    page = parseInt(page) - 1;
-    window.location.href = '/' + context + '/forum?page=' + page;
+function to_next_comment(settings) {
+    let sets = settings.split(',');
+    let page = parseInt(sets[2]) + 1;
+    window.location.href = '/' + context + '/forum?searchType=' + sets[0] + '&orderType=' + sets[1] + '&page=' + page;
+}
+
+function to_up_comment(settings) {
+    let sets = settings.split(',');
+    let page = parseInt(sets[2]) - 1;
+    window.location.href = '/' + context + '/forum?searchType=' + sets[0] + '&orderType=' + sets[1] + '&page=' + page;
 }
 
 function connect_modal() {

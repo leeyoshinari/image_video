@@ -6,11 +6,13 @@ h4 {
 }
 
 h5 {
-    float: right;
+    /*float: right;*/
     margin-right: 2%;
+    padding-top: 3px;
 }
 
 .comment {
+    position: relative;
     height: 38px;
     background-color: silver;
 }
@@ -92,4 +94,48 @@ h5 {
     background-color: #5b9bde;
     height: 33px;
     width: 77px;
+}
+
+.click {
+    width: 65px;
+    height: 40px;
+    display: table-cell;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.timer {
+    margin-right: 6%;
+    display: none;
+}
+
+.top {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 7px 9px;
+    border-color: transparent transparent #999999;
+    position: absolute;
+    transform: rotate(180deg);
+    bottom: 8px;
+    right: 17px;
+}
+.top:hover {
+    cursor: pointer;
+    border-color: transparent transparent #333333;
+}
+
+.bottom {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 7px 9px;
+    border-color: transparent transparent #999999;
+    position: absolute;
+    top: 10px;
+    right: 17px;
+}
+.bottom:hover {
+    cursor: pointer;
+    border-color: transparent transparent #333333;
 }

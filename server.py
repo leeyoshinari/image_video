@@ -208,7 +208,7 @@ async def main():
     app.router.add_static(f'{getServer("serverContext")}/static/',
                           path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
                           append_version=True)
-    app.router.add_route('GET', f'{getServer("serverContext")}', home)
+    app.router.add_route('GET', f'{getServer("serverContext")}', course)
     app.router.add_route('GET', f'{getServer("serverContext")}/comment', comment)
     app.router.add_route('GET', f'{getServer("serverContext")}/answer', answer)
     app.router.add_route('GET', f'{getServer("serverContext")}/find', finder)
