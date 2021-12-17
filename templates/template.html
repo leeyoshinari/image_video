@@ -79,12 +79,12 @@
             </div>
             <button onclick="search()">Search</button>
             <button onclick="forum()">Forum</button>
-            <button onclick="">Contact Me</button>
             <button onclick="course()">Help</button>
         </div>
-        <input type="text" id="setting" value="{{ setting }}" style="width: 3px; margin-left: 3%">
+        <!--input type="text" id="setting" value="{{ setting }}" style="width: 3px; margin-left: 3%"-->
         <div class="container">
             {% block tables %}
+            <h3 style="margin-bottom: 5%; margin-left: 5%;">我们不生产答案，我们只是知乎的搬运工</h3>
             {% endblock %}
         </div>
     {% endblock %}

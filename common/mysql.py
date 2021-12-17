@@ -184,6 +184,22 @@ def add_connect(data):
         raise Exception(err)
 
 
+def get_contact():
+    sql = "select * from message order by create_time desc;"
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        return None
+    del cursor, con
+    return results
+
+
 def merge_res(res_sorted, all_res):
     result = []
     res_dict = dict(res_sorted)

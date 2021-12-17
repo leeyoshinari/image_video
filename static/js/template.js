@@ -30,11 +30,11 @@ let ventures = {"100":0
 ,"191":29
 ,"192":30
 ,"170":31}
-let settings = document.getElementById('setting').value;
+/**let settings = document.getElementById('setting').value;
 if (settings) {
     load(settings);
 }
-document.getElementById('setting').style.display = 'none';
+document.getElementById('setting').style.display = 'none';**/
 let context = window.location.href.split('/')[3];
 
 function select_charge() {
@@ -172,7 +172,7 @@ function search() {
     window.location.href = '/' + context + request_url + '&type=' + query_type;
 }
 
-function to_next_page() {
+function to_next_page(settings) {
     let sets = settings.split(',');
     let page = parseInt(sets[2]) + 1;
     let request_url = '';
@@ -195,7 +195,7 @@ function to_next_page() {
     window.location.href = '/' + context + request_url;
 }
 
-function to_up_page() {
+function to_up_page(settings) {
     let sets = settings.split(',');
     let page = parseInt(sets[2]) - 1;
     let request_url = '';

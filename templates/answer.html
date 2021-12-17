@@ -30,10 +30,15 @@
 </table>
 <div class="pages">
     {% if total > page * 15 %}
-        <button class="paging" onclick="to_next_page()">Next >></button>
+        <button class="paging" onclick="to_next_page('{{ setting }}')">Next >></button>
     {% endif %}
     {% if total > 15 and page > 1 %}
-        <button class="paging" onclick="to_up_page()"><< Pre</button>
+        <button class="paging" onclick="to_up_page('{{ setting }}')"><< Pre</button>
     {% endif %}
 </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        load('{{ setting }}');
+    </script>
 {% endblock %}

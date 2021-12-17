@@ -1,0 +1,28 @@
+{% extends "template.html" %}
+{% block csss %}
+<link href="..{{ context }}/static/css/answer.css" rel="stylesheet">
+{% endblock %}
+
+{% block tables %}
+<table border="1" cellspacing="0" cellpadding="6">
+    <tr class="table_style">
+        <th width="10%">ip</th>
+        <th width="15%">联系方式</th>
+        <th width="50%">内容</th>
+        <th width="15%">创建时间</th>
+    </tr>
+    {% for data in datas %}
+        <tr>
+            <td>{{ data[1] }}</td>
+            <td>{{ data[2] }}</td>
+            <td title="{{ data[3] }}" style="text-align: left;">{{ data[3] }}</td>
+            <td>{{ data[4] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        load('{{ setting }}');
+    </script>
+{% endblock %}
