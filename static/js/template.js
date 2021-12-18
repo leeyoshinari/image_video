@@ -29,7 +29,7 @@ let ventures = {"100":0
 ,"190":28
 ,"191":29
 ,"192":30
-,"170":31}
+,"170":31};
 /**let settings = document.getElementById('setting').value;
 if (settings) {
     load(settings);
@@ -357,7 +357,7 @@ function connect_modal() {
 
 
     window.onclick = function(event) {
-        if (event.target == modal) {
+        if (event.target === modal) {
             modal.style.display = "none";
         }
     }
