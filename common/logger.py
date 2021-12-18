@@ -29,7 +29,7 @@ file_handler = logging.handlers.TimedRotatingFileHandler(
     os.path.join(log_path, 'log.log'), when='midnight', interval=1, backupCount=backupcount)
 file_handler.suffix = '%Y-%m-%d.log'
 
-# file_handler = logging.StreamHandler()
+file_handler = logging.StreamHandler()
 
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)

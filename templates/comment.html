@@ -23,11 +23,11 @@
             <td>{{ data[2] }}</td>
             <td title="{{ data[3] }}" style="text-align: left;">{{ data[3] }}</td>
             {% if data[4] %}
-            <td>被动回复</td>
+                <td><span onclick="getCommentById('{{ data[4] }}')">被动回复</span></td>
             {% else %}
-            <td>主动评论</td>
+                <td><span onclick="getCommentById('{{ data[5] }}')">主动评论</span></td>
             {% endif %}
-            <td>{{ data[5] }}</td>
+            <td>{{ data[6] }}</td>
         </tr>
     {% endfor %}
 </table>
@@ -39,7 +39,24 @@
         <button class="paging" onclick="to_up_page('{{ setting }}')"><< Pre</button>
     {% endif %}
 </div>
+<div class="modal_cover"><div class="modal_gif"></div></div>
 {% endblock %}
+
+{% block comment %}
+<div id="myModal" class="modal">
+	<div class="modal-content">
+          <div class="modal-header">
+              <span class="close">&times;</span>
+              <h2>评论内容</h2>
+          </div>
+          <div class="modal-body">
+              <div id="modal_inner"></div>
+          </div>
+	  </div>
+	</div>
+</div>
+{% endblock %}
+
 {% block scripts %}
     <script type="text/javascript">
         load('{{ setting }}');

@@ -328,7 +328,6 @@ function connect_modal() {
         let content = document.getElementById("submit_content").value;
 
         if (!wechat || !content) {
-            console.log(123);
             $.Toast('所有内容都要填写哦 ~ ', 'error');
             return;
         }
@@ -362,4 +361,43 @@ function connect_modal() {
             modal.style.display = "none";
         }
     }
+}
+
+function getCommentById(Id) {
+    $('.modal_cover').css("display", "block");
+    $('.modal_gif').css("display", "block");
+    $.ajax({
+        type: "GET",
+        url: "getCommentById?Id=" + Id,
+        success: function (data) {
+            $('.modal_cover').css("display", "none");
+            $('.modal_gif').css("display", "none");
+            if (data['code'] === 1){
+                $.Toast(data['msg'], 'success');
+                comment_modal(data['data']);
+            } else {
+                $.Toast(data['msg'], 'error');
+                return;
+            }
+        }
+    })
+}
+
+function comment_modal(data) {
+    let modal = document.getElementById('myModal');
+    let close_a = document.getElementsByClassName("close")[0];
+    let modal_inner = document.getElementById("modal_inner");
+
+    modal.style.display = "block";
+
+    close_a.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    let res = ''
+    for(let i=0; i<data.length; i++) {
+        res = res + '<div class="commentById"><span>' + data[i][0] + '：</span><span>' + data[i][1] + '</span></div>' +
+            '<div class="commentTimeById"><span>' + data[i][2] + '</span></div>';
+    }
+    modal_inner.innerHTML = res;
 }

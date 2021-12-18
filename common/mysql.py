@@ -14,8 +14,8 @@ def get_answer(answer_id, page):
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
-    sql = f'select question_id, answer_id, name, content, create_time, update_time from simple_answer where answer_id={answer_id} order by update_time desc limit 15 offset {page};'
-    count = f'select count(1) from simple_answer where answer_id={answer_id};'
+    sql = f'select question_id, answer_id, name, content, create_time, update_time from simple_answer where answer_id="{answer_id}" order by update_time desc limit 15 offset {page};'
+    count = f'select count(1) from simple_answer where answer_id="{answer_id}";'
     try:
         cursor.execute(count)
         total_page = cursor.fetchall()
@@ -34,16 +34,16 @@ def get_comment(user_id, page):
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     if '-' in user_id or len(user_id) < 22:
-        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.create_time from (select ' \
-              f'answer_id, name, content, parent_id, create_time from comments where url_token="{user_id}" ' \
+        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time from (select ' \
+              f'answer_id, name, content, comment_id, parent_id, create_time from comments where url_token="{user_id}" ' \
               f'order by create_time desc limit 15 offset {page}) a left join simple_answer b on a.answer_id ' \
-              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.create_time;'
+              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time;'
         count = f'select count(1) from comments where url_token="{user_id}";'
     else:
-        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.create_time from (select ' \
-              f'answer_id, name, content, parent_id, create_time from comments where commenter_id="{user_id}" ' \
+        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time from (select ' \
+              f'answer_id, name, content, comment_id, parent_id, create_time from comments where commenter_id="{user_id}" ' \
               f'order by create_time desc limit 15 offset {page}) a left join simple_answer b on a.answer_id ' \
-              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.create_time;'
+              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time;'
         count = f'select count(1) from comments where commenter_id="{user_id}";'
 
     try:
@@ -57,6 +57,23 @@ def get_comment(user_id, page):
         return None, 0
     del cursor, con
     return results, total_page[0][0]
+
+
+def get_comment_by_id(comment_id):
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    sql = f"select name, content, create_time from comments where comment_id = '{comment_id}' or parent_id = '{comment_id}' order by create_time;"
+
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    except Exception as err:
+        logger.info(err)
+        del cursor, con
+        raise Exception(err)
+    del cursor, con
+    return results
 
 
 def get_key_word(venture, key_word, page):
@@ -90,7 +107,7 @@ def get_similarity(answer_id, page, is_init = False):
     if is_init:
         sch.get_result()
 
-    sql = f'select id, hash from simple_answer where answer_id={answer_id} order by update_time desc limit 1;'
+    sql = f'select id, hash from simple_answer where answer_id="{answer_id}" order by update_time desc limit 1;'
     select_sql = 'select id, question_id, answer_id, name, content, create_time, update_time from simple_answer where id in {};'
     try:
         cursor.execute(sql)

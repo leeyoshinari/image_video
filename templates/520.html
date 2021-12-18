@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+
+{% block tables %}
+<p>当前系统繁忙，请稍后再试 ~ </p>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        load('{{ setting }}');
+    </script>
+{% endblock %}

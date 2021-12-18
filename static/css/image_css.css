@@ -33,7 +33,7 @@ li {
 
 /* 弹窗 (background) */
 .modal {
-    display: none; /* 默认隐藏 */
+    display: none;
     position: fixed;
     z-index: 1;
     padding-top: 100px;

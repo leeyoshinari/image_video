@@ -5,17 +5,20 @@ import os
 import time
 import json
 import asyncio
+import redis
 import jinja2
 from aiohttp import web
 import aiohttp_jinja2
 
-from common.config import getServer, user_name
+from common.config import getServer, user_name, DateEncoder
 from common.deal_ip import IPQueue
-from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment, add_connect, get_contact
+from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment, add_connect, get_contact, get_comment_by_id
 from common.logger import logger
 
 
 FIFO = IPQueue()
+r = redis.Redis(host=getServer('redis_host'), port=getServer('redis_port'), password=getServer('redis_pwd'))
+freq = int(getServer('r_freq'))
 
 
 async def home(request):
@@ -28,13 +31,18 @@ async def home(request):
 
 async def comment(request):
     host = request.headers.get('X-Real-IP')
+    f = request.query.get('f')
+    if f == getServer('r_auth'):
+        r.delete('comment')
+    if r.get('comment'):
+        return aiohttp_jinja2.render_template('520.html', request, context={'context': getServer("serverContext")})
     user_id = request.query.get('userId')
     user_id = user_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
     page = request.query.get('page')
     auth = request.query.get('auth')
     page = int(page) if page else 1
-    if auth != getServer('auth'):
+    if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{user_id},{page}'
     FIFO.put_queue(host)
@@ -43,7 +51,8 @@ async def comment(request):
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
     results, total_page = get_comment(user_id, (page - 1) * 15)
-    if auth != getServer('auth'):
+    r.set('comment', 1, ex=freq)
+    if auth != getServer('p_auth'):
         total_page = total_page if total_page < 31 else 30
     if results:
         return aiohttp_jinja2.render_template('comment.html', request, context={'context': getServer("serverContext"), 'datas': results, 'setting': setting, 'total': total_page, 'page': page})
@@ -53,13 +62,18 @@ async def comment(request):
 
 async def answer(request):
     host = request.headers.get('X-Real-IP')
+    f = request.query.get('f')
+    if f == getServer('r_auth'):
+        r.delete('answer')
+    if r.get('answer'):
+        return aiohttp_jinja2.render_template('520.html', request, context={'context': getServer("serverContext")})
     answer_id = request.query.get('aId')
     answer_id = answer_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
     page = request.query.get('page')
     auth = request.query.get('auth')
     page = int(page) if page else 1
-    if auth != getServer('auth'):
+    if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{answer_id},{page}'
     FIFO.put_queue(host)
@@ -68,7 +82,8 @@ async def answer(request):
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
     results, total_page = get_answer(answer_id, (page - 1) * 15)
-    if auth != getServer('auth'):
+    r.set('answer', 1, ex=freq)
+    if auth != getServer('p_auth'):
         total_page = total_page if total_page < 31 else 30
     if results:
         return aiohttp_jinja2.render_template('answer.html', request, context={'context': getServer("serverContext"), 'datas': results, 'setting': setting, 'total': total_page, 'page': page})
@@ -78,6 +93,11 @@ async def answer(request):
 
 async def finder(request):
     host = request.headers.get('X-Real-IP')
+    f = request.query.get('f')
+    if f == getServer('r_auth'):
+        r.delete('finder')
+    if r.get('finder'):
+        return aiohttp_jinja2.render_template('520.html', request, context={'context': getServer("serverContext")})
     venture = request.query.get('venture')
     key_word = request.query.get('keyWord')
     key_word = key_word.replace('%', '').replace('+', '')
@@ -85,7 +105,7 @@ async def finder(request):
     page = request.query.get('page')
     auth = request.query.get('auth')
     page = int(page) if page else 1
-    if auth != getServer('auth'):
+    if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{venture},{key_word},{page}'
     FIFO.put_queue(host)
@@ -94,7 +114,8 @@ async def finder(request):
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
     results, total_page = get_key_word(venture, key_word, (page - 1) * 15)
-    if auth != getServer('auth'):
+    r.set('finder', 1, ex=freq)
+    if auth != getServer('p_auth'):
         total_page = total_page if total_page < 31 else 30
     if results:
         return aiohttp_jinja2.render_template('answer.html', request, context={'context': getServer("serverContext"), 'datas': results, 'setting': setting, 'total': total_page, 'page': page})
@@ -104,6 +125,11 @@ async def finder(request):
 
 async def similarity(request):
     host = request.headers.get('X-Real-IP')
+    f = request.query.get('f')
+    if f == getServer('r_auth'):
+        r.delete('similarity')
+    if r.get('similarity'):
+        return aiohttp_jinja2.render_template('520.html', request, context={'context': getServer("serverContext")})
     answer_id = request.query.get('aId')
     answer_id = answer_id.replace('%', '').replace('+', '')
     types = request.query.get('type')
@@ -111,7 +137,7 @@ async def similarity(request):
     auth = request.query.get('auth')
     init_status = request.query.get('init')
     page = int(page) if page else 1
-    if auth != getServer('auth'):
+    if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{answer_id},{page}'
     FIFO.put_queue(host)
@@ -120,7 +146,8 @@ async def similarity(request):
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
     results, total_page = get_similarity(answer_id, (page - 1) * 15, init_status)
-    if auth != getServer('auth'):
+    r.set('similarity', 1, ex=freq)
+    if auth != getServer('p_auth'):
         total_page = total_page if total_page < 31 else 30
     if results:
         return aiohttp_jinja2.render_template('similarity.html', request,
@@ -138,6 +165,11 @@ async def images(request):
 
 async def forum(request):
     host = request.headers.get('X-Real-IP')
+    f = request.query.get('f')
+    if f == getServer('r_auth'):
+        r.delete('forum')
+    if r.get('forum'):
+        return aiohttp_jinja2.render_template('520.html', request, context={'context': getServer("serverContext")})
     page = request.query.get('page')
     search_type = request.query.get('searchType')
     order_type = request.query.get('orderType')
@@ -150,6 +182,7 @@ async def forum(request):
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
     results, total_page = get_forum((page - 1) * 10, search_type, order_type)
+    r.set('forum', 1, ex=freq)
     if results:
         return aiohttp_jinja2.render_template('forum.html', request, context={'context': getServer("serverContext"),
                                               'setting': setting, 'datas': results, 'total': total_page, 'page': page})
@@ -161,11 +194,13 @@ async def course(request):
     host = request.headers.get('X-Real-IP')
     FIFO.put_queue(host)
     FIFO.put_queue('course')
-    return aiohttp_jinja2.render_template('course.html', request, context={'context': getServer("serverContext"), })
+    return aiohttp_jinja2.render_template('course.html', request, context={'context': getServer("serverContext")})
 
 
 async def addComment(request):
     host = request.headers.get('X-Real-IP')
+    if r.get('addComment'):
+        return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
     data = json.loads(await request.text())
     date_time = time.strftime("%Y-%m-%d %H:%M:%S")
     user_id = user_name(host) if host else '2020520'
@@ -175,6 +210,7 @@ async def addComment(request):
     FIFO.put_queue('addComment')
     try:
         add_comment(comment_data)
+        r.set('addComment', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
     except Exception as err:
         return web.json_response({'code': 0, 'msg': err, 'data': None})
@@ -182,12 +218,17 @@ async def addComment(request):
 
 async def addConnect(request):
     host = request.headers.get('X-Real-IP')
+    if r.get('addConnect'):
+        return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
     data = json.loads(await request.text())
     date_time = time.strftime("%Y-%m-%d %H:%M:%S")
     host = host if host else ''
     contact_data = (host, data['tel'], data['content'], date_time)
+    FIFO.put_queue(host)
+    FIFO.put_queue('addConnect')
     try:
         add_connect(contact_data)
+        r.set('addConnect', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
     except Exception as err:
         return web.json_response({'code': 0, 'msg': err, 'data': None})
@@ -200,6 +241,24 @@ async def get_contacts(request):
                                                                               'datas': results})
     else:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
+
+
+async def getCommentById(request):
+    host = request.headers.get('X-Real-IP')
+    if r.get('getCommentById'):
+        return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
+    comment_id = request.query.get('Id')
+    if not comment_id:
+        return web.json_response({'code': 0, 'msg': "未查询到内容，请稍后再试 ~ ", 'data': None})
+    FIFO.put_queue(host)
+    FIFO.put_queue('getCommentById')
+    try:
+        result = get_comment_by_id(comment_id)
+        r.set('getCommentById', 1, ex=freq)
+        return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': json.loads(json.dumps(result, cls=DateEncoder))})
+    except Exception as err:
+        logger.info(err)
+        return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
 
 
 async def main():
@@ -219,6 +278,7 @@ async def main():
     app.router.add_route('POST', f'{getServer("serverContext")}/addComment', addComment)
     app.router.add_route('POST', f'{getServer("serverContext")}/addConnect', addConnect)
     app.router.add_route('GET', f'{getServer("serverContext")}/contact', get_contacts)
+    app.router.add_route('GET', f'{getServer("serverContext")}/getCommentById', getCommentById)
 
     runner = web.AppRunner(app)
     await runner.setup()
