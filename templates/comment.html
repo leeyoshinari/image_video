@@ -5,29 +5,24 @@
 {% block tables %}
 <table border="1" cellspacing="0" cellpadding="6">
     <tr class="table_style">
-        <th width="12%">问题Id</th>
-        <th width="12%">回答Id</th>
-        <th width="15%">评论人</th>
-        <th width="40%">评论内容</th>
+        <th width="10%">回答Id</th>
+        <th width="13%">评论人</th>
+        <th width="55%">评论内容</th>
         <th width="10%">评论类型</th>
-        <th width="11%">评论时间</th>
+        <th width="12%">评论时间</th>
     </tr>
     {% for data in datas %}
         <tr>
-            <td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
-            {% if data[0] %}
-                <td><a href="https://zhihu.com/question/{{ data[0] }}/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
-            {% else %}
-                <td>{{ data[1] }}</td>
-            {% endif %}
-            <td>{{ data[2] }}</td>
-            <td title="{{ data[3] }}" style="text-align: left;">{{ data[3] }}</td>
+            <!--td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td-->
+            <td><a href="https://zhihu.com/answer/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
+            <td>{{ data[1] }}</td>
+            <td title="{{ data[2] }}" style="text-align: left;">{{ data[2] }}</td>
             {% if data[4] %}
                 <td><span onclick="getCommentById('{{ data[4] }}')">被动回复</span></td>
             {% else %}
-                <td><span onclick="getCommentById('{{ data[5] }}')">主动评论</span></td>
+                <td><span onclick="getCommentById('{{ data[3] }}')">主动评论</span></td>
             {% endif %}
-            <td>{{ data[6] }}</td>
+            <td>{{ data[5] }}</td>
         </tr>
     {% endfor %}
 </table>

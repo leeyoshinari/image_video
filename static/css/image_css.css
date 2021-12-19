@@ -5,7 +5,7 @@
 }
 .filter {
     float: left;
-    width: 16%;
+    width: 18%;
 }
 label
 {
@@ -30,7 +30,9 @@ li {
     margin-top: 8px;
     margin-bottom: 8px;
 }
-
+img {
+    width: 100%;
+}
 /* 弹窗 (background) */
 .modal {
     display: none;

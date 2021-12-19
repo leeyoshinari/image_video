@@ -34,16 +34,12 @@ def get_comment(user_id, page):
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     if '-' in user_id or len(user_id) < 22:
-        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time from (select ' \
-              f'answer_id, name, content, comment_id, parent_id, create_time from comments where url_token="{user_id}" ' \
-              f'order by create_time desc limit 15 offset {page}) a left join simple_answer b on a.answer_id ' \
-              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time;'
+        sql = f'select answer_id, name, content, comment_id, parent_id, create_time from comments where ' \
+              f'url_token="{user_id}" order by create_time desc limit 15 offset {page};'
         count = f'select count(1) from comments where url_token="{user_id}";'
     else:
-        sql = f'select b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time from (select ' \
-              f'answer_id, name, content, comment_id, parent_id, create_time from comments where commenter_id="{user_id}" ' \
-              f'order by create_time desc limit 15 offset {page}) a left join simple_answer b on a.answer_id ' \
-              f'= b.answer_id group by b.question_id, a.answer_id, a.name, a.content, a.parent_id, a.comment_id, a.create_time;'
+        sql = f'select answer_id, name, content, comment_id, parent_id, create_time from comments where ' \
+              f'commenter_id="{user_id}" order by create_time desc limit 15 offset {page};'
         count = f'select count(1) from comments where commenter_id="{user_id}";'
 
     try:

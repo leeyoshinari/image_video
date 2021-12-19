@@ -16,11 +16,7 @@
     {% for data in datas %}
         <tr>
             <td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
-            {% if data[0] %}
-                <td><a href="https://zhihu.com/question/{{ data[0] }}/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
-            {% else %}
-                <td>{{ data[1] }}</td>
-            {% endif %}
+            <td><a href="https://zhihu.com/answer/{{ data[1] }}" target="_blank">{{ data[1] }}</a></td>
             <td>{{ data[2] }}</td>
             <td title="{{ data[3] }}" style="text-align: left;">{{ data[3] }}</td>
             <td>{{ data[4] }}</td>

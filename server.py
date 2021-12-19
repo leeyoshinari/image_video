@@ -23,14 +23,19 @@ freq = int(getServer('r_freq'))
 
 async def home(request):
     host = request.headers.get('X-Real-IP')
-    FIFO.put_queue(host)
-    FIFO.put_queue('home')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('home', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     logger.info(f'{host} - home')
     return aiohttp_jinja2.render_template('template.html', request, context={'context': getServer("serverContext"), 'setting': ''})
 
 
 async def comment(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     f = request.query.get('f')
     if f == getServer('r_auth'):
         r.delete('comment')
@@ -45,8 +50,9 @@ async def comment(request):
     if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{user_id},{page}'
-    FIFO.put_queue(host)
-    FIFO.put_queue('comment')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('comment', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     logger.info(f'{host} - comment - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -62,6 +68,8 @@ async def comment(request):
 
 async def answer(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     f = request.query.get('f')
     if f == getServer('r_auth'):
         r.delete('answer')
@@ -76,8 +84,9 @@ async def answer(request):
     if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{answer_id},{page}'
-    FIFO.put_queue(host)
-    FIFO.put_queue('answer')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('answer', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     logger.info(f'{host} - answer - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -93,6 +102,8 @@ async def answer(request):
 
 async def finder(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     f = request.query.get('f')
     if f == getServer('r_auth'):
         r.delete('finder')
@@ -108,8 +119,9 @@ async def finder(request):
     if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{venture},{key_word},{page}'
-    FIFO.put_queue(host)
-    FIFO.put_queue('finder')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('finder', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     logger.info(f'{host} - finder - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -125,6 +137,8 @@ async def finder(request):
 
 async def similarity(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     f = request.query.get('f')
     if f == getServer('r_auth'):
         r.delete('similarity')
@@ -140,8 +154,9 @@ async def similarity(request):
     if auth != getServer('p_auth'):
         page = page if page < 3 else 2
     setting = f'{types},{answer_id},{page}'
-    FIFO.put_queue(host)
-    FIFO.put_queue('similarity')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('similarity', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     logger.info(f'{host} - similarity - {setting}')
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
@@ -165,6 +180,8 @@ async def images(request):
 
 async def forum(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     f = request.query.get('f')
     if f == getServer('r_auth'):
         r.delete('forum')
@@ -177,8 +194,9 @@ async def forum(request):
     search_type = search_type if search_type else 'time'
     order_type = order_type if order_type else 'desc'
     setting = f'{search_type},{order_type},{page}'
-    FIFO.put_queue(host)
-    FIFO.put_queue('forum')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('forum', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     if page < 1:
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
     results, total_page = get_forum((page - 1) * 10, search_type, order_type)
@@ -192,22 +210,27 @@ async def forum(request):
 
 async def course(request):
     host = request.headers.get('X-Real-IP')
-    FIFO.put_queue(host)
-    FIFO.put_queue('course')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('course', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     return aiohttp_jinja2.render_template('course.html', request, context={'context': getServer("serverContext")})
 
 
 async def addComment(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     if r.get('addComment'):
         return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
     data = json.loads(await request.text())
-    date_time = time.strftime("%Y-%m-%d %H:%M:%S")
     user_id = user_name(host) if host else '2020520'
     parent_id = data['id'] if data['id'] else ''
-    comment_data = (parent_id, user_id, data['content'], date_time)
-    FIFO.put_queue(host)
-    FIFO.put_queue('addComment')
+    comment_data = (parent_id, user_id, data['content'], current_time)
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('addComment', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     try:
         add_comment(comment_data)
         r.set('addComment', 1, ex=freq)
@@ -218,14 +241,16 @@ async def addComment(request):
 
 async def addConnect(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     if r.get('addConnect'):
         return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
     data = json.loads(await request.text())
-    date_time = time.strftime("%Y-%m-%d %H:%M:%S")
     host = host if host else ''
-    contact_data = (host, data['tel'], data['content'], date_time)
-    FIFO.put_queue(host)
-    FIFO.put_queue('addConnect')
+    contact_data = (host, data['tel'], data['content'], current_time)
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('addConnect', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     try:
         add_connect(contact_data)
         r.set('addConnect', 1, ex=freq)
@@ -245,13 +270,16 @@ async def get_contacts(request):
 
 async def getCommentById(request):
     host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     if r.get('getCommentById'):
         return web.json_response({'code': 0, 'msg': "当前系统繁忙，请稍后再试 ~ ", 'data': None})
     comment_id = request.query.get('Id')
     if not comment_id:
         return web.json_response({'code': 0, 'msg': "未查询到内容，请稍后再试 ~ ", 'data': None})
-    FIFO.put_queue(host)
-    FIFO.put_queue('getCommentById')
+    FIFO.put_queue((host, current_time))
+    FIFO.put_queue(('getCommentById', current_time))
+    FIFO.put_queue((host, user_agent, current_time))
     try:
         result = get_comment_by_id(comment_id)
         r.set('getCommentById', 1, ex=freq)
