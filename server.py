@@ -5,6 +5,7 @@ import os
 import time
 import json
 import asyncio
+import traceback
 import redis
 import jinja2
 from aiohttp import web
@@ -236,7 +237,8 @@ async def addComment(request):
         r.set('addComment', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
     except Exception as err:
-        return web.json_response({'code': 0, 'msg': err, 'data': None})
+        logger.error(traceback.format_exc())
+        return web.json_response({'code': 0, 'msg': '系统异常，请稍后重试！', 'data': None})
 
 
 async def addConnect(request):
@@ -256,7 +258,8 @@ async def addConnect(request):
         r.set('addConnect', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Comment Successfully ! ", 'data': None})
     except Exception as err:
-        return web.json_response({'code': 0, 'msg': err, 'data': None})
+        logger.error(traceback.format_exc())
+        return web.json_response({'code': 0, 'msg': '系统异常，请稍后重试！', 'data': None})
 
 
 async def get_contacts(request):
@@ -285,7 +288,7 @@ async def getCommentById(request):
         r.set('getCommentById', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': json.loads(json.dumps(result, cls=DateEncoder))})
     except Exception as err:
-        logger.info(err)
+        logger.error(traceback.format_exc())
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
 
 

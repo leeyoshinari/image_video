@@ -3,6 +3,7 @@
 # Author: leeyoshinari
 import time
 import queue
+import traceback
 import threading
 import pymysql
 from common.config import getServer
@@ -46,10 +47,13 @@ class IPQueue:
                 while True:
                     if not self.q.empty():
                         param = self.q.get()
-                        if len(param) == 2:
-                            self.write_sql(param)
-                        else:
-                            self.write_agent_sql(param)
+                        try:
+                            if len(param) == 2:
+                                self.write_sql(param)
+                            else:
+                                self.write_agent_sql(param)
+                        except:
+                            logger.error(traceback.format_exc())
                     else:
                         break
                 del self.cursor, self.con

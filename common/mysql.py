@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: leeyoshinari
+import traceback
 import pymysql
 from common.config import getServer
 from common.scheduler import Schedule
@@ -21,8 +22,8 @@ def get_answer(answer_id, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None, 0
     del cursor, con
@@ -47,8 +48,8 @@ def get_comment(user_id, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None, 0
     del cursor, con
@@ -65,7 +66,7 @@ def get_comment_by_id(comment_id):
         cursor.execute(sql)
         results = cursor.fetchall()
     except Exception as err:
-        logger.info(err)
+        logger.error(traceback.format_exc())
         del cursor, con
         raise Exception(err)
     del cursor, con
@@ -87,8 +88,8 @@ def get_key_word(venture, key_word, page):
         total_page = cursor.fetchall()
         cursor.execute(sql)
         results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None, 0
     del cursor, con
@@ -108,6 +109,10 @@ def get_similarity(answer_id, page, is_init = False):
     try:
         cursor.execute(sql)
         results = cursor.fetchall()
+        if not results:
+            del cursor, con
+            return None, 0
+
         hash1 = results[0][1]
 
         res_list = []
@@ -123,8 +128,8 @@ def get_similarity(answer_id, page, is_init = False):
 
         cursor.execute(select_sql.format(tuple(ids)))
         results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None, 0
     del cursor, con
@@ -158,8 +163,8 @@ def get_forum(page, search_type = 'time', order_type = 'desc'):
         if search_type == 'hotttt':
             cursor.execute(hot_sql.format(order_type, page, order_type, page))
             results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None, 0
     del cursor, con
@@ -177,7 +182,7 @@ def add_comment(data):
         con.commit()
         del cursor, con
     except Exception as err:
-        logger.error(err)
+        logger.error(traceback.format_exc())
         del cursor, con
         raise Exception(err)
 
@@ -192,7 +197,7 @@ def add_connect(data):
         con.commit()
         del cursor, con
     except Exception as err:
-        logger.error(err)
+        logger.error(traceback.format_exc())
         del cursor, con
         raise Exception(err)
 
@@ -205,8 +210,8 @@ def get_contact():
     try:
         cursor.execute(sql)
         results = cursor.fetchall()
-    except Exception as err:
-        logger.info(err)
+    except:
+        logger.error(traceback.format_exc())
         del cursor, con
         return None
     del cursor, con

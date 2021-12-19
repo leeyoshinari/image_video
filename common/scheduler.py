@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Author: leeyoshinari
 import time
+import traceback
 import pymysql
 from common.config import getServer
 from common.logger import logger
@@ -26,6 +27,6 @@ class Schedule:
             self.connect()
             self.cursor.execute(self.sql.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-8640000))))
             self.res = self.cursor.fetchall()
-        except Exception as err:
-            logger.info(err)
+        except:
+            logger.error(traceback.format_exc())
         del self.cursor, self.con
