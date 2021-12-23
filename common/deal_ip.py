@@ -53,6 +53,7 @@ class IPQueue:
                             else:
                                 self.write_agent_sql(param)
                         except:
+                            logger.error(param)
                             logger.error(traceback.format_exc())
                     else:
                         break
