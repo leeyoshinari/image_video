@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Mate Selection</title>
 
-    <link href="..{{ context }}/static/favicon.ico" rel="shortcut ico" type="image/x-icon">
     <link href="..{{ context }}/static/css/bootstrap.css" rel="stylesheet">
     <link href="..{{ context }}/static/css/image_css.css" rel="stylesheet">
     <link href="..{{ context }}/static/css/toast.style.css" rel="stylesheet">
@@ -13,6 +12,8 @@
 
     <script src="..{{ context }}/static/js/jquery.js"></script>
     <script src="..{{ context }}/static/js/toast.script.js"></script>
+    {% block front_scripts %}
+    {% endblock %}
 
 </head>
 <body>

@@ -218,6 +218,22 @@ def get_contact():
     return results
 
 
+def get_pie():
+    sql = "select traffic from access where province is null and ip != 'None';"
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    except:
+        logger.error(traceback.format_exc())
+        del cursor, con
+        return None
+    del cursor, con
+    return [r[0] for r in results]
+
+
 def merge_res(res_sorted, all_res):
     result = []
     res_dict = dict(res_sorted)

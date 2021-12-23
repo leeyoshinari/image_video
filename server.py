@@ -13,7 +13,7 @@ import aiohttp_jinja2
 
 from common.config import getServer, user_name, DateEncoder
 from common.deal_ip import IPQueue
-from common.mysql import get_answer, get_comment, get_key_word, get_forum, get_similarity, add_comment, add_connect, get_contact, get_comment_by_id
+from common.mysql import *
 from common.logger import logger
 
 
@@ -287,7 +287,23 @@ async def getCommentById(request):
         result = get_comment_by_id(comment_id)
         r.set('getCommentById', 1, ex=freq)
         return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': json.loads(json.dumps(result, cls=DateEncoder))})
-    except Exception as err:
+    except:
+        logger.error(traceback.format_exc())
+        return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
+
+
+async def dashboard(request):
+    host = request.headers.get('X-Real-IP')
+    user_agent = request.headers.get('User-Agent')
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    # FIFO.put_queue((host, current_time))
+    # FIFO.put_queue(('dashboard', current_time))
+    # FIFO.put_queue((host, user_agent, current_time))
+    try:
+        result = get_pie()
+        return aiohttp_jinja2.render_template('dashboard.html', request, context={'context': getServer("serverContext"),
+                                                                                  'datas': result, 'total': sum(result)})
+    except:
         logger.error(traceback.format_exc())
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
 
@@ -310,6 +326,7 @@ async def main():
     app.router.add_route('POST', f'{getServer("serverContext")}/addConnect', addConnect)
     app.router.add_route('GET', f'{getServer("serverContext")}/contact', get_contacts)
     app.router.add_route('GET', f'{getServer("serverContext")}/getCommentById', getCommentById)
+    app.router.add_route('GET', f'{getServer("serverContext")}/dashboard', dashboard)
 
     runner = web.AppRunner(app)
     await runner.setup()
