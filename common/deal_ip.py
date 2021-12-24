@@ -46,7 +46,7 @@ class IPQueue:
 
     def write_sql_task(self):
         while True:
-            if time.strftime("%Y-%m-%d") == "23:59":
+            if time.strftime("%H:%M") == "23:59":
                 self.daily_record()
             if self.q.qsize() > 20:
                 self.connect_sql()
