@@ -4,16 +4,16 @@ function plot_pie(total, datas) {
   datas =  eval('(' + datas + ')');
   let pie_option = {
     title: {
-      text: '网站PV: 累计访问量 ' + total + ' 次',
+      text: '累计PV: ' + total,
       left: 'center'
     },
     tooltip: {
       trigger: 'item'
     },
-    legend: {
-      orient: 'vertical',
-      left: 'left'
-    },
+    // legend: {
+    //   orient: 'vertical',
+    //   left: 'left'
+    // },
     series: [
       {
         name: 'Access From',

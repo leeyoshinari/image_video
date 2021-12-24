@@ -18,6 +18,10 @@ user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic) values
 user_agent_select_sql = "select id, ip, traffic from user_agent where ip = '{}' and user_agent = '{}';"
 user_agent_update_sql = "update user_agent set traffic = {} where id = {};"
 
+uv_sql = "select count(1) from access where province is not null and access_time > '{}';"
+pv_sql = "select traffic from access where province is null and ip != 'None';"
+daily_sql = "insert into user_agent (ip, user_agent, traffic) value ('{}', '{}', {});"
+
 class IPQueue:
     def __init__(self):
         self.q = queue.Queue()
@@ -42,6 +46,8 @@ class IPQueue:
 
     def write_sql_task(self):
         while True:
+            if time.strftime("%Y-%m-%d") == "23:59":
+                self.daily_record()
             if self.q.qsize() > 20:
                 self.connect_sql()
                 while True:
@@ -85,3 +91,18 @@ class IPQueue:
             self.execute(user_agent_update_sql.format(num + 1, res[0][0]), is_commit=True)
         else:
             self.execute(user_agent_insert_sql.format(value[0], value[1], 1), is_commit=True)
+
+    def daily_record(self):
+        self.connect_sql()
+        current_day = time.strftime("%Y-%m-%d")
+        try:
+            pv_res = self.execute(pv_sql)
+            total = [r[0] for r in pv_res]
+            self.execute(daily_sql.format(current_day, 'pv', sum(total)), is_commit=True)
+            uv_res = self.execute(uv_sql.format(time.strftime("%Y-%m-%d %H:%M:%S")))
+            self.execute(daily_sql.format(current_day, 'uv', uv_res[0][0]), is_commit=True)
+            del self.cursor, self.con
+        except:
+            del self.cursor, self.con
+            logger.error(traceback.format_exc())
+

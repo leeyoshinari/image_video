@@ -7,12 +7,12 @@
 {% endblock %}
 {% block comment %}
 <div class="container">
-    <div id="pie" style="width: 720px;height:480px;"></div>
+    <div id="pie" style="width: 520px;height:480px;"></div>
 </div>
 {% endblock %}
 {% block scripts %}
 <script src="..{{ context }}/static/js/dashboard.js"></script>
 <script type="text/javascript">
-        plot_pie('{{ total }}', '{{ datas }}');
-    </script>
+    plot_pie('{{ total }}', '{{ datas }}');
+</script>
 {% endblock %}
