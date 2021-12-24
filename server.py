@@ -308,12 +308,19 @@ async def dashboard(request):
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
 
 
+async def test(request):
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    FIFO.put_queue(('None', current_time))
+    return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext")})
+
+
 async def main():
     app = web.Application()
     aiohttp_jinja2.setup(app, loader = jinja2.FileSystemLoader('templates'))
     app.router.add_static(f'{getServer("serverContext")}/static/',
                           path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
                           append_version=True)
+    app.router.add_route('GET', f'{getServer("serverContext")}/testtest', test)
     app.router.add_route('GET', f'{getServer("serverContext")}', course)
     app.router.add_route('GET', f'{getServer("serverContext")}/comment', comment)
     app.router.add_route('GET', f'{getServer("serverContext")}/answer', answer)
