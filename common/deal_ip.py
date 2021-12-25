@@ -49,7 +49,6 @@ class IPQueue:
     def write_sql_task(self):
         flag = True
         while True:
-            logger.info(flag)
             if flag and time.strftime("%H:%M") == "23:59":
                 flag = self.daily_record()
             if not flag and time.strftime("%H:%M") == "00:01":
