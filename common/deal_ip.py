@@ -7,6 +7,7 @@ import traceback
 import threading
 import pymysql
 from common.config import getServer
+from common.dealData import *
 from common.logger import logger
 
 
@@ -14,7 +15,8 @@ insert_sql = "insert into access (ip, traffic, access_time) values ('{}', {}, '{
 select_sql = "select ip, traffic from access where ip = '{}';"
 update_sql = "update access set traffic = {}, access_time = '{}' where ip = '{}';"
 
-user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic) values ('{}', '{}', {});"
+user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, browser, mobile) values ('{}', '{}', {}, '{}', '{}', '{}');"
+user_mobile_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, browser) values ('{}', '{}', {}, '{}', '{}');"
 user_agent_select_sql = "select id, ip, traffic from user_agent where ip = '{}' and user_agent = '{}';"
 user_agent_update_sql = "update user_agent set traffic = {} where id = {};"
 
@@ -45,9 +47,13 @@ class IPQueue:
         t.start()
 
     def write_sql_task(self):
+        flag = True
         while True:
-            if time.strftime("%H:%M") == "23:59":
-                self.daily_record()
+            logger.info(flag)
+            if flag and time.strftime("%H:%M") == "23:32":
+                flag = self.daily_record()
+            if not flag and time.strftime("%H:%M") == "23:33":
+                flag = True
             if self.q.qsize() > 20:
                 self.connect_sql()
                 while True:
@@ -90,7 +96,13 @@ class IPQueue:
             num = res[0][2]
             self.execute(user_agent_update_sql.format(num + 1, res[0][0]), is_commit=True)
         else:
-            self.execute(user_agent_insert_sql.format(value[0], value[1], 1), is_commit=True)
+            system = get_system(value[1])
+            browser = get_browser(value[1])
+            mobile = get_mobile(value[1])
+            if mobile:
+                self.execute(user_agent_insert_sql.format(value[0], value[1], 1, system, browser, mobile), is_commit=True)
+            else:
+                self.execute(user_mobile_insert_sql.format(value[0], value[1], 1, system, browser), is_commit=True)
 
     def daily_record(self):
         self.connect_sql()
@@ -99,10 +111,12 @@ class IPQueue:
             pv_res = self.execute(pv_sql)
             total = [r[0] for r in pv_res]
             self.execute(daily_sql.format(current_day, 'pv', sum(total)), is_commit=True)
-            uv_res = self.execute(uv_sql.format(time.strftime("%Y-%m-%d %H:%M:%S")))
+            uv_res = self.execute(uv_sql.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-86400))))
             self.execute(daily_sql.format(current_day, 'uv', uv_res[0][0]), is_commit=True)
             del self.cursor, self.con
+            return False
         except:
             del self.cursor, self.con
             logger.error(traceback.format_exc())
+            return True
 
