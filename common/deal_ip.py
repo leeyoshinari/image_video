@@ -50,9 +50,9 @@ class IPQueue:
         flag = True
         while True:
             logger.info(flag)
-            if flag and time.strftime("%H:%M") == "23:32":
+            if flag and time.strftime("%H:%M") == "23:59":
                 flag = self.daily_record()
-            if not flag and time.strftime("%H:%M") == "23:33":
+            if not flag and time.strftime("%H:%M") == "00:01":
                 flag = True
             if self.q.qsize() > 20:
                 self.connect_sql()
