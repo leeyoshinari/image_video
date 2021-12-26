@@ -302,7 +302,7 @@ async def dashboard(request):
     try:
         result = get_pie()
         return aiohttp_jinja2.render_template('dashboard.html', request, context={'context': getServer("serverContext"),
-                                                                                  'datas': result, 'total': sum(result)})
+                                                                                  'datas': json.dumps(result)})
     except:
         logger.error(traceback.format_exc())
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})

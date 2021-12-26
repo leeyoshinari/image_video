@@ -10,6 +10,10 @@ from common.logger import logger
 
 
 sch = Schedule()
+browser_dict = {'Chrome': 'Chrome', 'Edge': 'Edge', 'ZhihuHybrid': '知乎内置浏览器', 'MetaSr': '搜狗',
+                'MiuiBrowser': '小米', 'MicroMessenger': '微信内置浏览器', 'QQBrowser': 'QQBrowser',
+                'Firefox': 'Firefox', 'Safari': 'Safari', 'Baidu': '百度浏览器'}
+
 
 def get_answer(answer_id, page):
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
@@ -219,19 +223,43 @@ def get_contact():
 
 
 def get_pie():
-    sql = "select traffic from access where province is null and ip != 'None';"
+    pv_sql = "select traffic from access where province is null and ip != 'None';"
+    puv_sql = "select ip, user_agent, traffic from user_agent where os is null order by id desc;"
+    os_sql = "select os, count(os) from user_agent where os is not null group by os;"
+    browser_sql = "select browser, count(browser) from user_agent where browser is not null group by browser;"
+    mobile_sql = "select mobile, count(mobile) from user_agent where mobile is not null group by mobile;"
+    net_sql = "select type, count(type) from access where type is not null group by type;"
+    map_sql = "select province, city, district, count(1) from access where province is not null group by province, city, district;"
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     try:
-        cursor.execute(sql)
-        results = cursor.fetchall()
+        cursor.execute(pv_sql)
+        pv_results = cursor.fetchall()
+        cursor.execute(puv_sql)
+        puv_results = cursor.fetchall()
+        cursor.execute(browser_sql)
+        browser_results = cursor.fetchall()
+        cursor.execute(os_sql)
+        os_results = cursor.fetchall()
+        cursor.execute(mobile_sql)
+        mobile_results = cursor.fetchall()
+        cursor.execute(net_sql)
+        net_results = cursor.fetchall()
+        cursor.execute(map_sql)
+        map_results = cursor.fetchall()
     except:
         logger.error(traceback.format_exc())
         del cursor, con
         return None
     del cursor, con
-    return [r[0] for r in results]
+    pv = [r[0] for r in pv_results]
+    browser = [{'name': browser_dict[r[0]], 'value': r[1]} for r in browser_results]
+    os = [{'name': r[0], 'value': r[1]} for r in os_results]
+    mobile = [{'name': r[0], 'value': r[1]} for r in mobile_results]
+    net = [{'name': r[0], 'value': r[1]} for r in net_results]
+    return {'pv': pv, 'browser': browser, 'os': os, 'mobile': mobile, 'net': net,
+            'puv': deal_puv(puv_results), 'map': deal_map(map_results)}
 
 
 def merge_res(res_sorted, all_res):
@@ -253,4 +281,39 @@ def deal_forum(results):
             res[str(r[1])]['child'].append({"id": r[0], "name": r[2], "content": r[3], "create_time": r[4]})
         else:
             res.update({str(r[0]): {"id": r[0], "name": r[2], "content": r[3], "create_time": r[4], "child": []}})
+    return res
+
+
+def deal_puv(result):
+    x_line = []
+    uv_line = []
+    pv_line = []
+    for r in result:
+        x_line.append(r[0])
+        if r[1] == 'pv':
+            pv_line.append(r[2])
+        else:
+            uv_line.append(r[2])
+    axis = list(set(x_line))
+    axis.reverse()
+    pv_line.reverse()
+    uv_line.reverse()
+    return {'xaxis': axis, 'pv': pv_line, 'uv': uv_line}
+
+
+def deal_map(result):
+    res = {}
+    for r in result:
+        if res.get(r[0]):
+            res[r[0]]['value'] = res[r[0]]['value'] + r[3]
+        else:
+            res.update({r[0]: {"name": r[0], "value": r[3], "child": {}}})
+        if r[1]:
+            if res[r[0]]['child'].get(r[1]):
+                res[r[0]]['child'][r[1]]['value'] = res[r[0]]['child'][r[1]]['value'] + r[3]
+            else:
+                res[r[0]]['child'].update({r[1]: {"name": r[1], "value": r[3], "child": {}}})
+        if r[2]:
+            res[r[0]]['child'][r[1]]['child'].update({r[2]: {"name": r[2], "value": r[3]}})
+
     return res

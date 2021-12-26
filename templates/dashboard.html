@@ -3,16 +3,29 @@
 <link href="..{{ context }}/static/css/dashboard.css" rel="stylesheet">
 {% endblock %}
 {% block front_scripts %}
-<script src="..{{ context }}/static/js/echarts.common.js"></script>
+<script src="..{{ context }}/static/js/echarts.min.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts.min.js"></script>-->
 {% endblock %}
 {% block comment %}
 <div class="container">
-    <div id="pie" style="width: 520px;height:480px;"></div>
+    <div class="c">
+        <div id="pv_pie" class="pie pie_float top"></div>
+        <div id="puv_line" class="line pie_float top"></div>
+    </div>
+    <div class="c" style="height: 840px;">
+        <div id="os_pie" class="pie pie_float top"></div>
+        <div id="browser_pie" class="pie pie_float top"></div>
+        <div id="mobile_pie" class="pie pie_float top"></div>
+        <div id="net_pie" class="pie pie_float top"></div>
+    </div>
+    <div class="c">
+        <div id="china" class="map"></div>
+    </div>
 </div>
 {% endblock %}
 {% block scripts %}
 <script src="..{{ context }}/static/js/dashboard.js"></script>
 <script type="text/javascript">
-    plot_pie('{{ total }}', '{{ datas }}');
+    plot('{{ datas }}');
 </script>
 {% endblock %}

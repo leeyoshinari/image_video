@@ -1,4 +1,29 @@
-#piecanvas {
-    height: 480px;
-    width: 480px;
+.c {
+    width: 100%;
+    height: 420px;
+}
+
+.pie {
+    width: 30%;
+    height: 420px;
+}
+
+.line {
+    width: 60%;
+    height: 420px;
+}
+
+.pie_float {
+    float: left;
+}
+
+.top {
+    margin-top: 2%;
+    margin-left: 2%;
+}
+
+.map {
+    width: 100%;
+    height: 460px;
+    margin-top: 3%;
 }
