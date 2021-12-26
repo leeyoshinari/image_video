@@ -189,7 +189,7 @@ async function plot_map(datas) {
     china.style['height'] = screen_width + 'px';
     let map_chart = echarts.init(china);
     let allCode = await getGeoJson('all.json');
-    let chinaGeoJson = await getGeoJson('100000_full.json');
+    let chinaGeoJson = await getGeoJson('100000.json');
     initEcharts(chinaGeoJson, '全国', map_chart, allCode, datas);
 
     function initEcharts(geoJson, name, chart, alladcode, accessData) {
@@ -222,9 +222,9 @@ async function plot_map(datas) {
         chart.on('click', params => {
             let clickRegionCode = alladcode.filter(areaJson => areaJson.name === params.name)[0].adcode;
             let clickAccessData = getKey(accessData, params.name).child;
-            getGeoJson(clickRegionCode + '_full.json').then(regionGeoJson => initEcharts(regionGeoJson, params.name, chart, alladcode, clickAccessData))
+            getGeoJson(clickRegionCode + '.json').then(regionGeoJson => initEcharts(regionGeoJson, params.name, chart, alladcode, clickAccessData))
                 .catch(err => {
-                    getGeoJson('100000_full.json').then(
+                    getGeoJson('100000.json').then(
                         chinaGeoJson => initEcharts(chinaGeoJson, '全国', chart, alladcode, datas)
                     )
                 })
@@ -241,5 +241,5 @@ function getKey(j, key) {
 }
 
 async function getGeoJson(jsonName) {
-    return await $.get('https://geo.datav.aliyun.com/areas_v3/bound/' + jsonName);
+    return await $.get('static/map/' + jsonName);
 }

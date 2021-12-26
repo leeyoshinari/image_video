@@ -3,6 +3,8 @@
 # Author: leeyoshinari
 import os
 import time
+import json
+import urllib.request
 from common.config import getServer
 
 
@@ -50,5 +52,20 @@ def file_size(file):
     return round(stat_file.st_size / 1048576, 2)
 
 
+def download_file(name):
+    url = f'https://geo.datav.aliyun.com/areas_v3/bound/{name}_full.json'
+    try:
+        res = urllib.request.urlopen(url)
+        datas = res.read()
+        with open(f'../static/map/{name}.json', 'wb') as f:
+            f.write(datas)
+    except Exception as err:
+        print(err)
+
 if __name__ == '__main__':
     get_file()
+    download_file('all')
+    all_data = json.load(open('all.json', 'r', encoding='utf-8'))
+    for d in all_data:
+        print(d['name'], f"https://geo.datav.aliyun.com/areas_v3/bound/{d['adcode']}_full.json")
+        download_file(d['adcode'])

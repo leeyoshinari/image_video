@@ -295,7 +295,7 @@ def deal_puv(result):
         else:
             uv_line.append(r[2])
     axis = list(set(x_line))
-    axis.reverse()
+    axis.sort()
     pv_line.reverse()
     uv_line.reverse()
     return {'xaxis': axis, 'pv': pv_line, 'uv': uv_line}
