@@ -55,7 +55,7 @@ def get_mobile(s):
             mobile = '小米'
         elif 'HONOR' in s:
             mobile = '荣耀'
-        elif 'V1986A' in s:
+        elif 'V1986A' in s or 'V1838' in s:
             mobile = 'vivo'
         elif 'SM-G' in s:
             mobile = '三星'
@@ -63,7 +63,7 @@ def get_mobile(s):
             mobile = '魅族'
         elif 'Coolpad' in s:
             mobile = '酷派'
-        elif 'Redmi' in s or 'M2012K11' in s or "RKQ" in s:
+        elif 'Redmi' in s or 'M2012K11' in s or "RKQ" in s or 'M2007J17' in s:
             mobile = '红米'
         else:
             mobile = ''

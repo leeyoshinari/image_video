@@ -229,7 +229,7 @@ def get_pie():
     browser_sql = "select browser, count(browser) from user_agent where browser is not null group by browser;"
     mobile_sql = "select mobile, count(mobile) from user_agent where mobile is not null group by mobile;"
     net_sql = "select type, count(type) from access where type is not null group by type;"
-    map_sql = "select province, city, district, count(1) from access where province is not null group by province, city, district;"
+    map_sql = "select province, city, district, sum(traffic) from access where province is not null group by province, city, district;"
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
@@ -305,15 +305,15 @@ def deal_map(result):
     res = {}
     for r in result:
         if res.get(r[0]):
-            res[r[0]]['value'] = res[r[0]]['value'] + r[3]
+            res[r[0]]['value'] = res[r[0]]['value'] + int(r[3])
         else:
-            res.update({r[0]: {"name": r[0], "value": r[3], "child": {}}})
+            res.update({r[0]: {"name": r[0], "value": int(r[3]), "child": {}}})
         if r[1]:
             if res[r[0]]['child'].get(r[1]):
-                res[r[0]]['child'][r[1]]['value'] = res[r[0]]['child'][r[1]]['value'] + r[3]
+                res[r[0]]['child'][r[1]]['value'] = res[r[0]]['child'][r[1]]['value'] + int(r[3])
             else:
-                res[r[0]]['child'].update({r[1]: {"name": r[1], "value": r[3], "child": {}}})
+                res[r[0]]['child'].update({r[1]: {"name": r[1], "value": int(r[3]), "child": {}}})
         if r[2]:
-            res[r[0]]['child'][r[1]]['child'].update({r[2]: {"name": r[2], "value": r[3]}})
+            res[r[0]]['child'][r[1]]['child'].update({r[2]: {"name": r[2], "value": int(r[3])}})
 
     return res
