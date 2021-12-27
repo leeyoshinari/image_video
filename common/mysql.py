@@ -11,8 +11,8 @@ from common.logger import logger
 
 sch = Schedule()
 browser_dict = {'Chrome': 'Chrome', 'Edge': 'Edge', 'ZhihuHybrid': '知乎内置浏览器', 'MetaSr': '搜狗',
-                'MiuiBrowser': '小米', 'MicroMessenger': '微信内置浏览器', 'QQBrowser': 'QQBrowser',
-                'Firefox': 'Firefox', 'Safari': 'Safari', 'Baidu': '百度浏览器'}
+                'MiuiBrowser': '小米', 'MicroMessenger': '微信内置浏览器', 'QQBrowser': 'QQBrowser', 'IE': 'IE',
+                'Firefox': 'Firefox', 'Safari': 'Safari', 'Baidu': '百度浏览器', 'HuaweiBrowser': 'HuaweiBrowser'}
 
 
 def get_answer(answer_id, page):

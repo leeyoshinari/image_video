@@ -15,8 +15,7 @@ insert_sql = "insert into access (ip, traffic, access_time) values ('{}', {}, '{
 select_sql = "select ip, traffic from access where ip = '{}';"
 update_sql = "update access set traffic = {}, access_time = '{}' where ip = '{}';"
 
-user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, browser, mobile) values ('{}', '{}', {}, '{}', '{}', '{}');"
-user_mobile_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, browser) values ('{}', '{}', {}, '{}', '{}');"
+user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, browser, mobile) values ('{}', '{}', {}, {}, {}, {});"
 user_agent_select_sql = "select id, ip, traffic from user_agent where ip = '{}' and user_agent = '{}';"
 user_agent_update_sql = "update user_agent set traffic = {} where id = {};"
 
@@ -98,11 +97,10 @@ class IPQueue:
             system = get_system(value[1])
             browser = get_browser(value[1])
             mobile = get_mobile(value[1])
-            if mobile:
-                self.execute(user_agent_insert_sql.format(value[0], value[1], 1, system, browser, mobile), is_commit=True)
-            else:
-                self.execute(user_mobile_insert_sql.format(value[0], value[1], 1, system, browser), is_commit=True)
-
+            system = f"'{system}'" if system else 'null'
+            browser = f"'{browser}'" if browser else 'null'
+            mobile = f"'{mobile}'" if mobile else 'null'
+            self.execute(user_agent_insert_sql.format(value[0], value[1], 1, system, browser, mobile), is_commit=True)
     def daily_record(self):
         self.connect_sql()
         current_day = time.strftime("%Y-%m-%d")
