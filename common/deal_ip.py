@@ -11,7 +11,7 @@ from common.dealData import *
 from common.logger import logger
 
 
-insert_sql = "insert into access (ip, traffic, access_time) values ('{}', {}, '{}');"
+insert_sql = "insert into access (ip, traffic, province, city, district, type, access_time) values ('{}', {}, {}, {}, {}, {}, '{}');"
 select_sql = "select ip, traffic from access where ip = '{}';"
 update_sql = "update access set traffic = {}, access_time = '{}' where ip = '{}';"
 
@@ -78,7 +78,9 @@ class IPQueue:
             num = res[0][1]
             self.execute(update_sql.format(num + 1, value[1], value[0]), is_commit=True)
         else:
-            self.execute(insert_sql.format(value[0], 1, value[1]), is_commit=True)
+            res = get_address(value[0])
+            logger.info(insert_sql.format(value[0], 1, res[0], res[1], res[2], res[3], value[1]))
+            self.execute(insert_sql.format(value[0], 1, res[0], res[1], res[2], res[3], value[1]), is_commit=True)
 
     def execute(self, sql, is_commit = False):
         self.cursor.execute(sql)

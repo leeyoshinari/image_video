@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: leeyoshinari
+import re
+import requests
+
+
+only_city = ['北京', '天津', '上海', '重庆']
+
 
 def get_system(s):
     if 'HarmonyOS' in s:
@@ -77,6 +83,31 @@ def get_mobile(s):
         mobile = None
 
     return mobile
+
+def get_address(host):
+    try:
+        p = 'Whwtdhalf w45-0 lh24 tl ml70">([\s\S]*)col-gray ml10 ip138'
+        pp = '<p>(.*?)</p>'
+        res = requests.get('https://ip.tool.chinaz.com/{}'.format(host))
+        r = re.findall(p, res.text)[0]
+        result = r.strip()
+        rr = re.findall(pp, result)[0]
+        datas = rr.split(' ')
+        if len(datas) == 5:
+            if datas[1] in only_city:
+                province = f"'{datas[1] + '市'}'"
+                city = f"'{datas[2]}'" if datas[2] else 'null'
+            else:
+                province = f"'{datas[1] + '省'}'"
+                city = f"'{datas[2] + '市'}'" if datas[2] else 'null'
+
+            district = f"'{datas[3]}'" if datas[3] else 'null'
+            net = f"'{datas[4]}'" if datas[4] else 'null'
+        else:
+            return ['null', 'null', 'null', 'null']
+        return [province, city, district, net]
+    except:
+        return ['null', 'null', 'null', 'null']
 
 
 if __name__ == '__main__':
