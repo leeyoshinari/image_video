@@ -19,7 +19,7 @@ user_agent_insert_sql = "insert into user_agent (ip, user_agent, traffic, os, br
 user_agent_select_sql = "select id, ip, traffic from user_agent where ip = '{}' and user_agent = '{}';"
 user_agent_update_sql = "update user_agent set traffic = {} where id = {};"
 
-uv_sql = "select count(1) from access where province is not null and access_time > '{}';"
+uv_sql = "select count(1) from access where province is not null;"
 pv_sql = "select traffic from access where province is null and ip != 'None';"
 daily_sql = "insert into user_agent (ip, user_agent, traffic) value ('{}', '{}', {});"
 
@@ -101,6 +101,7 @@ class IPQueue:
             browser = f"'{browser}'" if browser else 'null'
             mobile = f"'{mobile}'" if mobile else 'null'
             self.execute(user_agent_insert_sql.format(value[0], value[1], 1, system, browser, mobile), is_commit=True)
+
     def daily_record(self):
         self.connect_sql()
         current_day = time.strftime("%Y-%m-%d")
