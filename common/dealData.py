@@ -61,7 +61,7 @@ def get_mobile(s):
             mobile = '苹果'
         elif 'HUAWEI' in s or 'ANE-AL' in s:
             mobile = '华为'
-        elif 'MI' in s:
+        elif 'MI' in s or 'Mi' in s:
             mobile = '小米'
         elif 'HONOR' in s:
             mobile = '荣耀'

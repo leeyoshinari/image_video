@@ -79,7 +79,6 @@ class IPQueue:
             self.execute(update_sql.format(num + 1, value[1], value[0]), is_commit=True)
         else:
             res = get_address(value[0])
-            logger.info(insert_sql.format(value[0], 1, res[0], res[1], res[2], res[3], value[1]))
             self.execute(insert_sql.format(value[0], 1, res[0], res[1], res[2], res[3], value[1]), is_commit=True)
 
     def execute(self, sql, is_commit = False):
