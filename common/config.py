@@ -26,3 +26,8 @@ class DateEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
         else:
             return json.JSONEncoder.default(self, obj)
+
+
+if __name__ == '__main__':
+    code = '0058409243'
+    print(user_name(code))

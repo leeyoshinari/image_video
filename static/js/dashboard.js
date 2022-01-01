@@ -15,7 +15,7 @@ function plot(datas) {
   let mobile_pie = document.getElementById("mobile_pie");
   let net_pie = document.getElementById("net_pie");
 
-  plot_pie(os_pie, os_datas, '客户端系统');
+  plot_pie(os_pie, os_datas, '客户端操作系统');
   plot_pie(browser_pie, browser_datas, '客户端浏览器');
   plot_pie(mobile_pie, mobile_datas, '客户端手机');
   plot_pie(net_pie, net_datas, '网络运营商');
@@ -46,16 +46,15 @@ function plot_pv_pie(datas) {
       text: '累计PV: ' + sum(datas),
       left: 'center'
     },
-    // tooltip: {
-    //   trigger: 'item'
-    // },
+    tooltip: {
+      trigger: 'item'
+    },
     // legend: {
     //   orient: 'vertical',
     //   left: 'left'
     // },
     series: [
       {
-        name: 'Access From',
         type: 'pie',
         radius: '70%',
         center: ['50%', '50%'],
@@ -67,7 +66,7 @@ function plot_pv_pie(datas) {
           {value: datas[7], name: '评论详情'},
           {value: datas[3] + datas[6], name: '留言板'},
           {value: datas[4], name: '教程'},
-          {value: datas[8], name: '数据看板'}
+          // {value: datas[8], name: '数据看板'}
         ],
         emphasis: {
           itemStyle: {
