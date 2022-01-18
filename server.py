@@ -308,6 +308,46 @@ async def dashboard(request):
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
 
 
+async def back_answer(request):
+    auth = request.query.get('auth')
+    answer_id = request.query.get('aId')
+    answer_id = answer_id.replace('%', '').replace('+', '')
+    setting = f'0,{answer_id}'
+    if auth != getServer('p_auth'):
+        return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
+    results = get_d_answer(answer_id)
+    if results:
+        return aiohttp_jinja2.render_template('answer.html', request, context={'context': getServer("serverContext"), 'datas': results, 'setting': setting, 'total': 1, 'page': 1})
+    else:
+        return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
+
+
+async def back_comment(request):
+    auth = request.query.get('auth')
+    answer_id = request.query.get('aId')
+    answer_id = answer_id.replace('%', '').replace('+', '')
+    setting = f'0,{answer_id}'
+    if auth != getServer('p_auth'):
+        return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
+    results = get_d_comment(answer_id)
+    if results:
+        return aiohttp_jinja2.render_template('bd_comment.html', request, context={'context': getServer("serverContext"), 'datas': results, 'setting': setting, 'total': 1, 'page': 1})
+    else:
+        return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
+
+
+async def BdCommentById(request):
+    comment_id = request.query.get('Id')
+    if not comment_id:
+        return web.json_response({'code': 0, 'msg': "未查询到内容，请稍后再试 ~ ", 'data': None})
+    try:
+        result = get_comment_by_id(comment_id)
+        return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': json.loads(json.dumps(result, cls=DateEncoder))})
+    except:
+        logger.error(traceback.format_exc())
+        return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
+
+
 async def test(request):
     current_time = time.strftime("%Y-%m-%d %H:%M:%S")
     FIFO.put_queue(('None', current_time))
@@ -334,6 +374,9 @@ async def main():
     app.router.add_route('GET', f'{getServer("serverContext")}/contact', get_contacts)
     app.router.add_route('GET', f'{getServer("serverContext")}/getCommentById', getCommentById)
     app.router.add_route('GET', f'{getServer("serverContext")}/dashboard', dashboard)
+    app.router.add_route('GET', f'{getServer("serverContext")}/BDAnswer', back_answer)
+    app.router.add_route('GET', f'{getServer("serverContext")}/BDComment', back_comment)
+    app.router.add_route('GET', f'{getServer("serverContext")}/BDCommentById', BdCommentById)
 
     runner = web.AppRunner(app)
     await runner.setup()

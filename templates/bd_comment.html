@@ -1,0 +1,78 @@
+{% extends "template.html" %}
+{% block csss %}
+<link href="..{{ context }}/static/css/answer.css" rel="stylesheet">
+{% endblock %}
+{% block tables %}
+<table border="1" cellspacing="0" cellpadding="6">
+    <tr class="table_style">
+        <th width="10%">回答Id</th>
+        <th width="13%">评论人</th>
+        <th width="55%">评论内容</th>
+        <th width="10%">评论类型</th>
+        <th width="12%">评论时间</th>
+    </tr>
+    {% for data in datas %}
+        <tr>
+            <!--td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td-->
+            <td><a href="https://zhihu.com/answer/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
+            <td>{{ data[1] }}</td>
+            <td title="{{ data[2] }}" style="text-align: left;">{{ data[2] }}</td>
+            {% if data[4] %}
+                <td><span onclick="BDCommentById('{{ data[4] }}')">被动回复</span></td>
+            {% else %}
+                <td><span onclick="BDCommentById('{{ data[3] }}')">主动评论</span></td>
+            {% endif %}
+            <td>{{ data[5] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="pages">
+    {% if total > page * 15 %}
+        <button class="paging" onclick="to_next_page('{{ setting }}')">Next >></button>
+    {% endif %}
+    {% if total > 15 and page > 1 %}
+        <button class="paging" onclick="to_up_page('{{ setting }}')"><< Pre</button>
+    {% endif %}
+</div>
+<div class="modal_cover"><div class="modal_gif"></div></div>
+{% endblock %}
+
+{% block comment %}
+<div id="myModal" class="modal">
+	<div class="modal-content">
+          <div class="modal-header">
+              <span class="close">&times;</span>
+              <h2>评论内容</h2>
+          </div>
+          <div class="modal-body">
+              <div id="modal_inner"></div>
+          </div>
+	  </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        load('{{ setting }}');
+        function BDCommentById(Id) {
+            $('.modal_cover').css("display", "block");
+            $('.modal_gif').css("display", "block");
+            $.ajax({
+                type: "GET",
+                url: "BDCommentById?Id=" + Id,
+                success: function (data) {
+                    $('.modal_cover').css("display", "none");
+                    $('.modal_gif').css("display", "none");
+                    if (data['code'] === 1){
+                        $.Toast(data['msg'], 'success');
+                        comment_modal(data['data']);
+                    } else {
+                        $.Toast(data['msg'], 'error');
+                        return;
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

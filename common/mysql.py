@@ -34,6 +34,22 @@ def get_answer(answer_id, page):
     return results, total_page[0][0]
 
 
+def get_d_answer(answer_id):
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    sql = f'select question_id, answer_id, name, content, create_time, update_time from answers where answer_id="{answer_id}" order by update_time desc;'
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    except:
+        logger.error(traceback.format_exc())
+        del cursor, con
+        return None, 0
+    del cursor, con
+    return results
+
+
 def get_comment(user_id, page):
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
@@ -58,6 +74,24 @@ def get_comment(user_id, page):
         return None, 0
     del cursor, con
     return results, total_page[0][0]
+
+
+def get_d_comment(answer_id):
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    sql = f'select answer_id, name, content, comment_id, parent_id, create_time from comments where ' \
+          f'answer_id="{answer_id}" and parent_id ="" order by create_time desc;'
+
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    except:
+        logger.error(traceback.format_exc())
+        del cursor, con
+        return None, 0
+    del cursor, con
+    return results
 
 
 def get_comment_by_id(comment_id):
