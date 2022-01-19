@@ -8,16 +8,16 @@
             <li>本网站提供的所有数据仅供参考，对于使用本站数据产生的后果，本站概不负责。</li>
             <li>如有其他问题，请<a href="#" onclick="connect_modal()">联系我</a>。</li>
         </ol>
-        <h4 style="margin-top:3%;">使用说明：</h4>
+        <h4 style="margin-top:3%;color: red; font-weight: bolder;">使用说明(必读)：</h4>
         <p style="margin-left: 2%;">通过设置筛选条件，可以查询所有回答内容和评论内容。为了保证数据的安全性和服务的稳定性，仅限查询前30条数据。如需查询更多数据，请<a href="#" onclick="connect_modal()">联系我</a>。</p>
         <ol>
-            <li>查询类型如果选择“回答”，则根据回答Id查找这个回答的历史更新记录，可以查看每次更新的内容和更新时间；</li>
-            <li><p>查询类型如果选择“评论”，则根据用户Id或者用户的url-token查找这个用户的历史评论记录，可以查看这个用户评论了多少个回答以及评论内容。</p>
+            <li>查询类型如果选择“回答”，则根据<span style="font-weight: bolder; color: red;">回答Id (是回答的Id，不是用户昵称)</span>查找这个回答的历史更新记录，可以查看每次更新的内容和更新时间；</li>
+            <li><p>查询类型如果选择“评论”，则根据<span style="font-weight: bolder; color: red;">用户Id或者用户的url-token (这里也不是用户昵称)</span>查找这个用户的历史评论记录，可以查看这个用户评论了多少个回答以及评论内容。</p>
                 <p>评论类型有两种：主动评论和被动回复，主动评论的意思是这个用户评论别人的回答；被动回复的意思是自己的回答，别人评论了，自己回复。</p>
                 <p>查看用户评论时，可重点关注主动评论的内容和评论时间。由于很多回答设置了“评论由作者审核后展示”，很多评论是查不到的。</p>
                 点击评论类型，可以这个评论的评论内容和回复内容。<span style="font-weight: bolder;">如果url-token查不到，可换成userId</span>。
             </li>
-            <li><p>查询类型如果选择“相似度”，则根据回答Id查找这个回答的最新更新内容，然后再查找和这个回答内容相似的所有回答。由于相似度需要大量计算，仅限查找最近的3个月的回答。</p>
+            <li><p>查询类型如果选择“相似度”，则根据<span style="font-weight: bolder; color: red;">回答Id (这里也不是用户昵称)</span>查找这个回答的最新更新内容，然后再查找和这个回答内容相似的所有回答。由于相似度需要大量计算，仅限查找最近的3个月的回答。</p>
                 <p>相似度计算算法使用的是simhash，由于该算法是计算hash值并对数据进行降维，可能会导致完全不同的文本具有相似的hash值，故相似度计算仅供参考。</p>
                 <p>相似度大于90%的是高度相似，相似度大于60%的是大概率相似。</p>
             </li>
@@ -26,20 +26,20 @@
             </li>
             <li>留言交流，点击 Forum 按钮，大家可以交流自己发现的“有趣”的回答，供大家避坑。</li>
         </ol>
-        <h4 style="margin-top:3%;">使用须知：</h4>
+        <h4 style="margin-top:3%;color: red; font-weight: bolder;">使用须知：</h4>
         <ol>
             <li>本网站是依托阿里云服务器搭建的，服务器性能及其有限（因为穷租不起好的），为了避免可能的不友好的恶意请求导致系统不稳定，故对整个系统的请求频率进行限制，具体如下：
                 <p>（1）Nginx对所有请求（包括静态文件资源的请求和查询数据接口的请求）的访问频率限制为 <span style="color: red; font-weight: bolder;">1个/秒</span>。若超过限制的频率，请求返回的状态码是520；若页面展示不正常，可尝试重复多次刷新页面。<br>
                 （2）数据查询接口请求频率限制为 <span style="color: red; font-weight: bolder;">1个/5秒</span>。若超过限制的频率，页面会提示“当前系统繁忙，请稍后再试~”。</p></li>
             <li>如您在使用过程中有任何建议，可在这里<a href="#" onclick="connect_modal()">联系我</a>哦。</li>
         </ol>
-        <h4 style="margin-top:3%;">查询知乎相关Id指南：</h4>
+        <h4 style="margin-top:3%;color: red; font-weight: bolder;">查询知乎相关Id指南(必读)：</h4>
         <ol>
-            <li><p>查看问题Id 和 回答Id：点击分享某个回答，然后选择复制链接，然后粘贴到某个地方，可以查看问题Id和回答Id；在浏览器上点击分享可以看到问题Id和回答Id，在App上分享只能看到回答Id。浏览器上复制如下图所示：</p>
+            <li><p><span style="font-weight: bolder;">查看问题Id 和 回答Id：</span>点击分享某个回答，然后选择复制链接，然后粘贴到某个地方，可以查看问题Id和回答Id；在浏览器上点击分享可以看到问题Id和回答Id，在App上分享只能看到回答Id。浏览器上复制如下图所示：</p>
                 <img src="..{{ context }}/static/url.jpg" alt="url.jpg">
             </li><br><br>
             <li>
-                <p>查看用户的 url-token 或 Id：点击某个用户，进入ta的主页，然后url中就有 url-token；App可以进入用户主页，然后点击分享，然后选择复制链接，也可以看到用户的 url-token；<br>例如这个url：“https://www.zhihu.com/people/tian-xi-ta-90-97”，"tian-xi-ta-90-97"就是 url-token。</p>
+                <p><span style="font-weight: bolder;">查看用户的 url-token 或 Id：</span>点击某个用户，进入ta的主页，然后url中就有 url-token；App可以进入用户主页，然后点击分享，然后选择复制链接，也可以看到用户的 url-token；<br>例如这个url：“https://www.zhihu.com/people/tian-xi-ta-90-97”，"<span style="color: red;">tian-xi-ta-90-97</span>"就是 url-token。</p>
                 <p>如需查看用户Id，有点麻烦，具体可看下图的操作步骤：
                 <img src="..{{ context }}/static/userid.jpg" alt="course.jpg"></p>
             </li>
