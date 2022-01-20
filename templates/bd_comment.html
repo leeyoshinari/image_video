@@ -5,24 +5,26 @@
 {% block tables %}
 <table border="1" cellspacing="0" cellpadding="6">
     <tr class="table_style">
-        <th width="10%">回答Id</th>
-        <th width="13%">评论人</th>
+        <th width="9%">回答Id</th>
+        <th width="12%">评论人</th>
         <th width="55%">评论内容</th>
-        <th width="10%">评论类型</th>
-        <th width="12%">评论时间</th>
+        <th width="9%">评论类型</th>
+        <th width="10%">评论时间</th>
+        <th width="5%">操作</th>
     </tr>
     {% for data in datas %}
         <tr>
             <!--td><a href="https://zhihu.com/question/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td-->
             <td><a href="https://zhihu.com/answer/{{ data[0] }}" target="_blank">{{ data[0] }}</a></td>
-            <td>{{ data[1] }}</td>
+            <td id="{{ data[5] }}">{{ data[1] }}</td>
             <td title="{{ data[2] }}" style="text-align: left;">{{ data[2] }}</td>
             {% if data[4] %}
                 <td><span onclick="BDCommentById('{{ data[4] }}')">被动回复</span></td>
             {% else %}
                 <td><span onclick="BDCommentById('{{ data[3] }}')">主动评论</span></td>
             {% endif %}
-            <td>{{ data[5] }}</td>
+            <td>{{ data[6] }}</td>
+            <td><span onclick="deleteCommentById('{{ data[3] }}')">删除</span></td>
         </tr>
     {% endfor %}
 </table>
@@ -67,6 +69,25 @@
                     if (data['code'] === 1){
                         $.Toast(data['msg'], 'success');
                         comment_modal(data['data']);
+                    } else {
+                        $.Toast(data['msg'], 'error');
+                        return;
+                    }
+                }
+            })
+        }
+        function deleteCommentById(Id) {
+            $('.modal_cover').css("display", "block");
+            $('.modal_gif').css("display", "block");
+            $.ajax({
+                type: "GET",
+                url: "BDDeleteCommentById?Id=" + Id,
+                success: function (data) {
+                    $('.modal_cover').css("display", "none");
+                    $('.modal_gif').css("display", "none");
+                    if (data['code'] === 1){
+                        $.Toast(data['msg'], 'success');
+                        return;
                     } else {
                         $.Toast(data['msg'], 'error');
                         return;

@@ -80,7 +80,7 @@ def get_d_comment(answer_id):
     con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
-    sql = f'select answer_id, name, content, comment_id, parent_id, create_time from comments where ' \
+    sql = f'select answer_id, name, content, comment_id, parent_id, commenter_id, create_time from comments where ' \
           f'answer_id="{answer_id}" and parent_id ="" order by create_time desc;'
 
     try:
@@ -109,6 +109,22 @@ def get_comment_by_id(comment_id):
         raise Exception(err)
     del cursor, con
     return results
+
+
+def delete_comment_by_id(comment_id):
+    con = pymysql.connect(host=getServer('db_host'), user=getServer('db_user'), port=int(getServer('db_port')),
+                          password=getServer('db_pwd'), database=getServer('db_name'))
+    cursor = con.cursor()
+    sql = f"delete from comments where comment_id = '{comment_id}';"
+
+    try:
+        cursor.execute(sql)
+        con.commit()
+    except Exception as err:
+        logger.error(traceback.format_exc())
+        del cursor, con
+        raise Exception(err)
+    del cursor, con
 
 
 def get_key_word(venture, key_word, page):

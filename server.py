@@ -336,13 +336,25 @@ async def back_comment(request):
         return aiohttp_jinja2.render_template('404.html', request, context={'context': getServer("serverContext"), 'setting': setting})
 
 
-async def BdCommentById(request):
+async def back_commentById(request):
     comment_id = request.query.get('Id')
     if not comment_id:
         return web.json_response({'code': 0, 'msg': "未查询到内容，请稍后再试 ~ ", 'data': None})
     try:
         result = get_comment_by_id(comment_id)
         return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': json.loads(json.dumps(result, cls=DateEncoder))})
+    except:
+        logger.error(traceback.format_exc())
+        return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
+
+
+async def back_delete_commentById(request):
+    comment_id = request.query.get('Id')
+    if not comment_id:
+        return web.json_response({'code': 0, 'msg': "未查询到内容，请稍后再试 ~ ", 'data': None})
+    try:
+        delete_comment_by_id(comment_id)
+        return web.json_response({'code': 1, 'msg': "Successfully ! ", 'data': None})
     except:
         logger.error(traceback.format_exc())
         return web.json_response({'code': 0, 'msg': "系统异常，请稍后重试！", 'data': None})
@@ -376,7 +388,8 @@ async def main():
     app.router.add_route('GET', f'{getServer("serverContext")}/dashboard', dashboard)
     app.router.add_route('GET', f'{getServer("serverContext")}/BDAnswer', back_answer)
     app.router.add_route('GET', f'{getServer("serverContext")}/BDComment', back_comment)
-    app.router.add_route('GET', f'{getServer("serverContext")}/BDCommentById', BdCommentById)
+    app.router.add_route('GET', f'{getServer("serverContext")}/BDCommentById', back_commentById)
+    app.router.add_route('GET', f'{getServer("serverContext")}/BDDeleteCommentById', back_delete_commentById)
 
     runner = web.AppRunner(app)
     await runner.setup()
