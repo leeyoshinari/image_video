@@ -116,9 +116,11 @@ def delete_comment_by_id(comment_id):
                           password=getServer('db_pwd'), database=getServer('db_name'))
     cursor = con.cursor()
     sql = f"delete from comments where comment_id = '{comment_id}';"
+    sql1 = f"delete from comments where parent_id = '{comment_id}';"
 
     try:
         cursor.execute(sql)
+        cursor.execute(sql1)
         con.commit()
     except Exception as err:
         logger.error(traceback.format_exc())
