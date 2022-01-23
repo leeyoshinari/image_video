@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # Author: leeyoshinari
 import re
+import time
+import json
 import requests
 
 
@@ -84,31 +86,111 @@ def get_mobile(s):
 
     return mobile
 
-def get_address(host):
+def get_address1(host):
     try:
-        p = 'Whwtdhalf w45-0 lh24 tl ml70">([\s\S]*)col-gray ml10 ip138'
+        p = '<div id="tab0_address">(.*?)</div>'
         pp = '<p>(.*?)</p>'
-        res = requests.get('https://ip.tool.chinaz.com/{}'.format(host))
+        res = requests.get('https://www.ip.cn/ip/{}.html'.format(host))
         r = re.findall(p, res.text)[0]
-        result = r.strip()
-        rr = re.findall(pp, result)[0]
-        datas = rr.split(' ')
+        datas = r.split(' ')
         if len(datas) == 5:
-            if datas[1] in only_city:
-                province = f"'{datas[1] + '市'}'"
-                city = f"'{datas[2]}'" if datas[2] else 'null'
+            if datas[2] in only_city:
+                province = f"'{datas[2] + '市'}'"
+                city = 'null'
             else:
-                province = f"'{datas[1] + '省'}'"
-                city = f"'{datas[2] + '市'}'" if datas[2] else 'null'
+                province = f"'{datas[2]}'"
+                city = f"'{datas[3]}'" if datas[3] else 'null'
 
-            district = f"'{datas[3]}'" if datas[3] else 'null'
+            district = 'null'
             net = f"'{datas[4]}'" if datas[4] else 'null'
         else:
-            return ['null', 'null', 'null', 'null']
+            return None
         return [province, city, district, net]
     except:
-        return ['null', 'null', 'null', 'null']
+        return None
+
+
+def get_address2(host):
+    try:
+        p = '查询IP地址([\s\S]*?)</tbody>'
+        pp = '<td>([\s\S]*?)</td>'
+        res = requests.get('http://www.jsons.cn/ip/{}/'.format(host))
+        r = re.findall(p, res.text)[0]
+        result = r.strip()
+        rr = re.findall(pp, result)
+        datas = [rt.strip() for rt in rr]
+        if len(datas) == 8:
+            if datas[3] in only_city:
+                province = f"'{datas[3] + '市'}'"
+                city = 'null'
+            else:
+                province = f"'{datas[3] + '省'}'"
+                city = f"'{datas[5]}'" if datas[5] else 'null'
+
+            district = 'null'
+            net = f"'{datas[7]}'" if datas[7] else 'null'
+        else:
+            return None
+        return [province, city, district, net]
+    except:
+        return None
+
+
+def get_address3(host):
+    try:
+        res = requests.get('https://whois.pconline.com.cn/ipJson.jsp?ip={}&json=true'.format(host))
+        r = json.loads(res.text)
+        if r.get('pro'):
+            province = f"'{r.get('pro')}'"
+            city = f"'{r.get('city')}'" if r.get('city') else 'null'
+
+            district = 'null'
+            net = f"'{r.get('addr').split(' ')[-1]}'" if r.get('addr') else 'null'
+        else:
+            return None
+        return [province, city, district, net]
+    except:
+        return None
+
+
+def get_address4(host):
+    try:
+        res = requests.get('https://ip.taobao.com/outGetIpInfo?ip={}&accessKey=alibaba-inc'.format(host))
+        r = json.loads(res.text).get('data')
+        if r.get('region'):
+            if r.get('region') in only_city:
+                province = f"'{r.get('region') + '市'}'"
+                city = 'null'
+            else:
+                province = f"'{r.get('region') + '省'}'"
+                city = f"'{r.get('city') + '市'}'" if r.get('city') else 'null'
+
+            district = 'null'
+            net = f"'{r.get('isp')}'" if r.get('isp') else 'null'
+        else:
+            return None
+        return [province, city, district, net]
+    except:
+        return None
+
+
+def get_address(host):
+    time.sleep(0.5)
+    res = get_address3(host)
+    if res:
+        return res
+    res = get_address4(host)
+    if res:
+        return res
+    res = get_address2(host)
+    if res:
+        return res
+    res = get_address1(host)
+    if res:
+        return res
+    return ['null', 'null', 'null', 'null']
 
 
 if __name__ == '__main__':
-    pass
+    print(get_address('117.136.23.197'))
+    print(get_address4('117.9.23.18'))
